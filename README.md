@@ -1,6 +1,14 @@
-## Getting Started
+# Group Project for OOP course
 
-Welcome to the VS Code Java world. Here is a guideline to help you get started to write Java code in Visual Studio Code.
+'Mini Project' for the course, to be submitted before end-sem exams. But the development will still continue even after the course is over
+
+## 2D Floor Planner
+
+Something like autocad but 2D only. Current scope:
+
+- Can save and load files (to be implemented)
+- Rooms, furniture, windows and doors (later, stairs too)
+- change color, select, drag and drop, grid, snap and much more
 
 ## Folder Structure
 
@@ -10,9 +18,3 @@ The workspace contains two folders by default, where:
 - `lib`: the folder to maintain dependencies
 
 Meanwhile, the compiled output files will be generated in the `bin` folder by default.
-
-> If you want to customize the folder structure, open `.vscode/settings.json` and update the related settings there.
-
-## Dependency Management
-
-The `JAVA PROJECTS` view allows you to manage your dependencies. More details can be found [here](https://github.com/microsoft/vscode-java-dependency#manage-dependencies).
