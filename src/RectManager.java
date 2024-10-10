@@ -1,12 +1,14 @@
 
 import java.awt.Rectangle;
 import java.util.ArrayList;
-
+import java.awt.Point;
 // Rect refers to a single rectangle object
 // Rectangles refers to collection of rectangles
 
 public class RectManager {
-    private ArrayList<Rectangle> rectangles;
+    protected ArrayList<Rectangle> rectangles;
+
+    
 
     public RectManager() {
         rectangles = new ArrayList<>();
@@ -34,5 +36,23 @@ public class RectManager {
 
     public ArrayList<Rectangle> getRectangles() {
         return rectangles;
+    }
+
+    public class ClickedRectangle{
+        public boolean rectisClicked;
+        public Rectangle rect;
+    }
+
+    public ClickedRectangle pointinRect(Point p){
+        ClickedRectangle clickedrect = new ClickedRectangle();
+        clickedrect.rectisClicked = false;
+        for (int i = 0; i < rectangles.size(); i++){
+            Rectangle rect = rectangles.get(i);
+            if (rect.contains(p)) {
+                clickedrect.rectisClicked = true;
+                clickedrect.rect = rect;
+            }
+        }
+        return clickedrect;
     }
 }

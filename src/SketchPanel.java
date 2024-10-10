@@ -9,22 +9,52 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import javax.swing.JPanel;
 
+
+import java.awt.Point;
+
 public class SketchPanel extends JPanel{
     private DrawingTool drawingTool;
     private RectManager rectManager;
     private static final int GRID_SIZE = 16; // size in pixels
+    Rectangle RectClicked;
     private boolean snapEnabled = true;
     private boolean gridEnabled = true;
+    private boolean deleteEnabled = false;
+    public static boolean moveEnabled = true;
 
     public SketchPanel(DrawingTool drawingTool) {
         this.drawingTool = drawingTool;
         this.rectManager = new RectManager();
 
+
+
         addMouseListener(new MouseAdapter() {
             // this is annonymous inner class
             @Override
             public void mousePressed(MouseEvent e) {
-                drawingTool.startDrawing(snapToGrid(e.getX()), snapToGrid(e.getY()));
+                Point clickPoint = e.getPoint();
+                RectManager.ClickedRectangle clickedRectangle = rectManager.pointinRect(clickPoint);
+                RectClicked = clickedRectangle.rect;
+                if(!deleteEnabled){
+                    drawingTool.startDrawing(snapToGrid(e.getX()), snapToGrid(e.getY()));
+                }
+            }
+
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if(deleteEnabled){
+                    Point clickPoint = e.getPoint();
+                    for (int i = 0; i < rectManager.rectangles.size(); i++) {
+                        Rectangle rect = rectManager.rectangles.get(i);
+                        if (rect.contains(clickPoint)) {
+                            System.out.println("Clicked rectangle index: " + i);
+                            // Perform your action here (e.g., removing the rectangle)
+                            rectManager.rectangles.remove(i);
+                            repaint();
+                            break;
+                        }
+                    }
+                }
             }
 
             @Override
@@ -39,9 +69,20 @@ public class SketchPanel extends JPanel{
             // this is annonymous inner class
             @Override
             public void mouseDragged(MouseEvent e) {
-                drawingTool.continueDrawing(snapToGrid(e.getX()), snapToGrid(e.getY()));
+                if(!moveEnabled){
+                    drawingTool.continueDrawing(snapToGrid(e.getX()), snapToGrid(e.getY()));
+                }else if(moveEnabled){
+                    System.out.println("Moving the shape");
+                    RectClicked.width = Math.abs(e.getX() - RectClicked.x);
+                    RectClicked.height = Math.abs(e.getY() - RectClicked.y);
+                    RectClicked.x = Math.min(RectClicked.x, e.getX());
+                    RectClicked.y = Math.min(RectClicked.y, e.getY());
+                }
                 repaint();
+                
             }
+
+            
         });
     }
 
@@ -85,6 +126,17 @@ public class SketchPanel extends JPanel{
         gridEnabled = enabled;
         repaint();
     }
+
+    public void deleteItems(boolean enabled){
+        deleteEnabled = enabled;
+        repaint();
+    }
+
+    public void setmoveEnabled(boolean enabled){
+        moveEnabled = enabled;
+        repaint();
+    }
+
 
 
     @Override

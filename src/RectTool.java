@@ -11,6 +11,8 @@ public class RectTool extends DrawingTool {
         currentRect = new Rectangle(x, y, 0, 0);
         startX = x;
         startY = y;
+        SketchPanel.moveEnabled = false;
+
     }
 
     @Override
@@ -29,6 +31,9 @@ public class RectTool extends DrawingTool {
     public void finishDrawing() {
         // empty for now
         currentRect = null;
+        SketchPanel.moveEnabled = true;
     }
+
+    
     
 }

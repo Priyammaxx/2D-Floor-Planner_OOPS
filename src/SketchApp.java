@@ -19,6 +19,7 @@ public class SketchApp extends JFrame{
     private JButton undoRect;
     boolean snapEnabled = true;
     boolean gridEnabled = true;
+    boolean deleteEnabled = false;
 
     public SketchApp() {
         setTitle("2D Floor Planner");
@@ -110,8 +111,15 @@ public class SketchApp extends JFrame{
             sketchPanel.setSnapEnabled(snapEnabled);
         });
 
+        JToggleButton deleteToggle = new JToggleButton("Delete Item", deleteEnabled);
+        deleteToggle.addActionListener(e -> {
+            deleteEnabled = deleteToggle.isSelected();
+            sketchPanel.deleteItems(deleteEnabled);
+        });
+
         bottomBar.add(gridToggle);
         bottomBar.add(snapToggle);
+        bottomBar.add(deleteToggle);
         add(bottomBar, BorderLayout.SOUTH);
     }
 

@@ -20,5 +20,7 @@ public class ToolPanel extends JPanel {
 
         add(rectToolButton);
         add(furnitureToolButton);
+
+        //Add a delete button 
     }
 }
