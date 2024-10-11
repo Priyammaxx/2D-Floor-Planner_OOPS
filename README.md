@@ -1,10 +1,10 @@
 # Group Project for OOP course
 
-'Mini Project' for the course, to be submitted before end-sem exams. But the development will still continue even after the course is over
+'Mini Project' on Java Swing based GUI for OOP course, to be submitted before end-sem exams. But the development will still continue even after the course is over
 
 ## 2D Floor Planner
 
-Something like autocad but 2D only. Current scope:
+Something like autocad but in 2D only. Current scope:
 
 - Can save and load files (to be implemented)
 - Rooms, furniture, windows and doors (later, stairs too)
