@@ -64,57 +64,57 @@ public class SketchPanel extends JPanel{
 
             @Override
             public void mouseReleased(MouseEvent e) {
-                rectManager.addRect(drawingTool.getCurrentRect());
-                drawingTool.finishDrawing();
-                repaint();
-                if(moveEnabled){
+                if (!moveEnabled) {
+                    // Stop drawing and add the rectangle to the manager
+                    rectManager.addRect(drawingTool.getCurrentRect());
+                    drawingTool.finishDrawing();
+                } else if (RectClicked != null) {
+                    // Stop moving and snap the rectangle to the grid
                     int snappedX = snapToGrid(RectClicked.x);
                     int snappedY = snapToGrid(RectClicked.y);
                     RectClicked.setLocation(new Point(snappedX, snappedY));
                     clickedRectangle.rectisClicked = false;
                 }
-                
+                repaint();
             }
+
         });
 
         addMouseMotionListener(new MouseMotionAdapter() {
             // this is annonymous inner class
             @Override
             public void mouseDragged(MouseEvent e) {
-                boolean overlapcheck = false;
-                Rectangle overlappedRectangle = new Rectangle(0,0,0,0);
-                
-                
-                if(!deleteEnabled && !moveEnabled){
+                if (!moveEnabled) {
+                    // Continue drawing
                     drawingTool.continueDrawing(snapToGrid(e.getX()), snapToGrid(e.getY()));
                     repaint();
-                }else if(!deleteEnabled && moveEnabled && RectClicked != null) {
+                } else if (RectClicked != null) {
+                    // Move the rectangle
                     int deltaX = e.getX() - prevX;
                     int deltaY = e.getY() - prevY;
-
-
                     RectClicked.setLocation(RectClicked.x + deltaX, RectClicked.y + deltaY);
+                    
+                    boolean overlapCheck = false;
+                    Rectangle overlappedRectangle = new Rectangle(0, 0, 0, 0);
 
-                    for(Rectangle rect : rectManager.rectangles){
-                        if(RectClicked.intersects(rect)){
+                    // Check for overlaps
+                    for (Rectangle rect : rectManager.rectangles) {
+                        if (rect != RectClicked && RectClicked.intersects(rect)) {
+                            overlapCheck = true;
                             overlappedRectangle = rect;
-                            overlapcheck = true;
                             break;
                         }
                     }
 
-                    if(overlapcheck){
+                    if (overlapCheck) {
+                        // Snap to adjacent side if there is an overlap
                         snapToAdjacentSide(RectClicked, overlappedRectangle);
                     }
-                    
+
                     prevX = e.getX();
                     prevY = e.getY();
-            
                     repaint();
                 }
-                repaint();
-                
-                
             }
 
             
