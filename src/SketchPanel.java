@@ -1,4 +1,3 @@
-
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -8,8 +7,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import javax.swing.JPanel;
-
-
 import java.awt.Point;
 
 public class SketchPanel extends JPanel{
@@ -21,6 +18,12 @@ public class SketchPanel extends JPanel{
     private boolean gridEnabled = true;
     private boolean deleteEnabled = false;
     public static boolean moveEnabled = true;
+    int prevX;
+    int prevY;
+    int changeX;
+    int changeY;
+
+    RectManager.ClickedRectangle clickedRectangle;
 
     public SketchPanel(DrawingTool drawingTool) {
         this.drawingTool = drawingTool;
@@ -33,9 +36,11 @@ public class SketchPanel extends JPanel{
             @Override
             public void mousePressed(MouseEvent e) {
                 Point clickPoint = e.getPoint();
-                RectManager.ClickedRectangle clickedRectangle = rectManager.pointinRect(clickPoint);
+                clickedRectangle = rectManager.pointinRect(clickPoint);
                 RectClicked = clickedRectangle.rect;
-                if(!deleteEnabled){
+                prevX = snapToGrid(e.getX());
+                prevY = snapToGrid(e.getY());
+                if(!deleteEnabled && !(clickedRectangle.rectisClicked)){
                     drawingTool.startDrawing(snapToGrid(e.getX()), snapToGrid(e.getY()));
                 }
             }
@@ -62,6 +67,13 @@ public class SketchPanel extends JPanel{
                 rectManager.addRect(drawingTool.getCurrentRect());
                 drawingTool.finishDrawing();
                 repaint();
+                if(moveEnabled){
+                    int snappedX = snapToGrid(RectClicked.x);
+                    int snappedY = snapToGrid(RectClicked.y);
+                    RectClicked.setLocation(new Point(snappedX, snappedY));
+                    clickedRectangle.rectisClicked = false;
+                }
+                
             }
         });
 
@@ -69,16 +81,39 @@ public class SketchPanel extends JPanel{
             // this is annonymous inner class
             @Override
             public void mouseDragged(MouseEvent e) {
-                if(!moveEnabled){
+                boolean overlapcheck = false;
+                Rectangle overlappedRectangle = new Rectangle(0,0,0,0);
+                
+                
+                if(!deleteEnabled && !moveEnabled){
                     drawingTool.continueDrawing(snapToGrid(e.getX()), snapToGrid(e.getY()));
-                }else if(moveEnabled){
-                    System.out.println("Moving the shape");
-                    RectClicked.width = Math.abs(e.getX() - RectClicked.x);
-                    RectClicked.height = Math.abs(e.getY() - RectClicked.y);
-                    RectClicked.x = Math.min(RectClicked.x, e.getX());
-                    RectClicked.y = Math.min(RectClicked.y, e.getY());
+                    repaint();
+                }else if(!deleteEnabled && moveEnabled && RectClicked != null) {
+                    int deltaX = e.getX() - prevX;
+                    int deltaY = e.getY() - prevY;
+
+
+                    RectClicked.setLocation(RectClicked.x + deltaX, RectClicked.y + deltaY);
+
+                    for(Rectangle rect : rectManager.rectangles){
+                        if(RectClicked.intersects(rect)){
+                            overlappedRectangle = rect;
+                            overlapcheck = true;
+                            break;
+                        }
+                    }
+
+                    if(overlapcheck){
+                        snapToAdjacentSide(RectClicked, overlappedRectangle);
+                    }
+                    
+                    prevX = e.getX();
+                    prevY = e.getY();
+            
+                    repaint();
                 }
                 repaint();
+                
                 
             }
 
@@ -135,6 +170,31 @@ public class SketchPanel extends JPanel{
     public void setmoveEnabled(boolean enabled){
         moveEnabled = enabled;
         repaint();
+    }
+
+    public void snapToAdjacentSide(Rectangle r1, Rectangle r2){
+        int r1CenterX = r1.x + r1.width / 2;
+        int r1CenterY = r1.y + r1.height / 2;
+
+        int r2Left = r2.x;
+        int r2Right = r2.x + r2.width;
+        int r2Top = r2.y;
+        int r2Bottom = r2.y + r2.height;
+
+        // Determine which side r1 is approaching from
+        if (r1CenterX < r2Left) {
+            // Snap to the left side
+            r1.setLocation(r2Left - r1.width, r1.y);
+        } else if (r1CenterX > r2Right) {
+            // Snap to the right side
+            r1.setLocation(r2Right, r1.y);
+        } else if (r1CenterY < r2Top) {
+            // Snap to the top side
+            r1.setLocation(r1.x, r2Top - r1.height);
+        } else if (r1CenterY > r2Bottom) {
+            // Snap to the bottom side
+            r1.setLocation(r1.x, r2Bottom);
+        }
     }
 
 
