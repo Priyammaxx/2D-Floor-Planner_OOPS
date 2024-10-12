@@ -6,6 +6,8 @@ import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
+import java.util.ArrayList;
+
 import javax.swing.JPanel;
 import java.awt.Point;
 
@@ -28,7 +30,7 @@ public class SketchPanel extends JPanel{
     public SketchPanel(DrawingTool drawingTool) {
         this.drawingTool = drawingTool;
         this.rectManager = new RectManager();
-
+        
 
 
         addMouseListener(new MouseAdapter() {
@@ -36,10 +38,14 @@ public class SketchPanel extends JPanel{
             @Override
             public void mousePressed(MouseEvent e) {
                 Point clickPoint = e.getPoint();
+                //Condition where rectangle is clicked so that we can move it to another place
                 clickedRectangle = rectManager.pointinRect(clickPoint);
-                RectClicked = clickedRectangle.rect;
-                prevX = snapToGrid(e.getX());
-                prevY = snapToGrid(e.getY());
+                if(!deleteEnabled){
+                    RectClicked = clickedRectangle.rect;
+                    prevX = snapToGrid(e.getX());
+                    prevY = snapToGrid(e.getY());
+                }
+                //Delete not enabled 
                 if(!deleteEnabled && !(clickedRectangle.rectisClicked)){
                     drawingTool.startDrawing(snapToGrid(e.getX()), snapToGrid(e.getY()));
                 }
@@ -53,7 +59,7 @@ public class SketchPanel extends JPanel{
                         Rectangle rect = rectManager.rectangles.get(i);
                         if (rect.contains(clickPoint)) {
                             System.out.println("Clicked rectangle index: " + i);
-                            // Perform your action here (e.g., removing the rectangle)
+                            
                             rectManager.rectangles.remove(i);
                             repaint();
                             break;
@@ -64,12 +70,13 @@ public class SketchPanel extends JPanel{
 
             @Override
             public void mouseReleased(MouseEvent e) {
+                //Drawing Mode - moving disabled 
                 if (!moveEnabled) {
-                    // Stop drawing and add the rectangle to the manager
+                    
                     rectManager.addRect(drawingTool.getCurrentRect());
                     drawingTool.finishDrawing();
-                } else if (RectClicked != null) {
-                    // Stop moving and snap the rectangle to the grid
+                } else{
+                    //Moving mode - moving enabled so the moved rectangle is snapped to grid
                     int snappedX = snapToGrid(RectClicked.x);
                     int snappedY = snapToGrid(RectClicked.y);
                     RectClicked.setLocation(new Point(snappedX, snappedY));
@@ -85,19 +92,20 @@ public class SketchPanel extends JPanel{
             @Override
             public void mouseDragged(MouseEvent e) {
                 if (!moveEnabled) {
-                    // Continue drawing
+                    //Drawing mode- moving disabled
                     drawingTool.continueDrawing(snapToGrid(e.getX()), snapToGrid(e.getY()));
                     repaint();
-                } else if (RectClicked != null) {
-                    // Move the rectangle
+                } else {
+                    //Tracks how much the mouse is moving on dragging so that the rectangle would be moved by that much in the same trajectory
                     int deltaX = e.getX() - prevX;
                     int deltaY = e.getY() - prevY;
                     RectClicked.setLocation(RectClicked.x + deltaX, RectClicked.y + deltaY);
-                    
-                    boolean overlapCheck = false;
-                    Rectangle overlappedRectangle = new Rectangle(0, 0, 0, 0);
+                    //By default overlapcheck is false because there is no overlap
+                    boolean overlapCheck = false; // If there is overlap it will become true
+                    Rectangle overlappedRectangle = new Rectangle(0, 0, 0, 0); 
+                    //Default case where no rectangle is getting overlapped by another. To prevent null pointer exception asssigned to zero rectangle
 
-                    // Check for overlaps
+                    //Iterating through the previously drawn rectangles to check if anyone of them are getting overlapped
                     for (Rectangle rect : rectManager.rectangles) {
                         if (rect != RectClicked && RectClicked.intersects(rect)) {
                             overlapCheck = true;
@@ -105,12 +113,12 @@ public class SketchPanel extends JPanel{
                             break;
                         }
                     }
-
+                    //If there is overlap snap to the side of approach 
                     if (overlapCheck) {
-                        // Snap to adjacent side if there is an overlap
+                        
                         snapToAdjacentSide(RectClicked, overlappedRectangle);
                     }
-
+                    //The clicked point becomes the new reference point
                     prevX = e.getX();
                     prevY = e.getY();
                     repaint();
@@ -181,18 +189,18 @@ public class SketchPanel extends JPanel{
         int r2Top = r2.y;
         int r2Bottom = r2.y + r2.height;
 
-        // Determine which side r1 is approaching from
+        // side of approach of top rectangle
         if (r1CenterX < r2Left) {
-            // Snap to the left side
+            //left approach
             r1.setLocation(r2Left - r1.width, r1.y);
         } else if (r1CenterX > r2Right) {
-            // Snap to the right side
+            //right approach
             r1.setLocation(r2Right, r1.y);
         } else if (r1CenterY < r2Top) {
-            // Snap to the top side
+            //approach from top
             r1.setLocation(r1.x, r2Top - r1.height);
         } else if (r1CenterY > r2Bottom) {
-            // Snap to the bottom side
+            //approach from the bottom
             r1.setLocation(r1.x, r2Bottom);
         }
     }
@@ -218,13 +226,15 @@ public class SketchPanel extends JPanel{
         // draw all those rectangles
         for (Rectangle rect: rectManager.getRectangles()) {
             g2d.draw(rect);
+            drawRectangleSideLengths(g2d, rect);
         }
 
-        // draw current rectangle as the user drawgs the mouse
+        // draw current rectangle as the user drags the mouse
         if (drawingTool.getCurrentRect() != null) {
             // don't know how this works
             // why does repaint need to be called again when this does its work??
             g2d.draw(drawingTool.getCurrentRect());
+            drawRectangleSideLengths(g2d, drawingTool.getCurrentRect()); //If length of side is not required to be displayed delete this part.
         }
     }
 
@@ -251,6 +261,53 @@ public class SketchPanel extends JPanel{
 
         }
 
+    }
+
+    //If labelling of rectangle is not required delete this functionality
+
+    private void drawRectangleSideLengths(Graphics2D g2d, Rectangle rect) {
+        
+        
+        g2d.setColor(Color.BLACK); 
+    
+        
+        
+            int x = rect.x;
+            int y = rect.y;
+            int width = rect.width;
+            int height = rect.height;
+            if(width != 0 && height != 0){
+            
+            int leaderOffset = 10;
+
+            // Top Side Length
+                int topCenterX = x + width / 2;
+                g2d.drawString("W: " + width, topCenterX - 15, y - leaderOffset);
+                g2d.drawLine(topCenterX, y, topCenterX, y - leaderOffset); // leader line
+            
+                // Bottom side length
+                //int bottomCenterX = x + width / 2;
+                //g2d.drawString("W: " + width, bottomCenterX - 15, y + height + leaderOffset + 10);
+                //g2d.drawLine(bottomCenterX, y + height, bottomCenterX, y + height + leaderOffset); //leader line
+            
+                //Left side length
+                int leftCenterY = y + height / 2;
+                g2d.drawLine(x, leftCenterY, x - leaderOffset, leftCenterY); 
+            
+                g2d.rotate(-Math.PI / 2, x - leaderOffset - 10, leftCenterY + 5); // rotate for vertical text
+                g2d.drawString("H: " + height, x - leaderOffset - 10, leftCenterY + 5);
+                g2d.rotate(Math.PI / 2, x - leaderOffset - 10, leftCenterY + 5); // reset
+            
+                //Draw right side length(Not required - always will be equal to left side length so doesn't matter)
+                //int rightCenterY = y + height / 2;
+                //g2d.drawLine(x + width, rightCenterY, x + width + leaderOffset, rightCenterY); // leader line
+            //
+                //g2d.rotate(-Math.PI / 2, x + width + leaderOffset + 10, rightCenterY + 5); // rotate for vertical text
+                //g2d.drawString("H: " + height, x + width + leaderOffset + 10, rightCenterY + 5);
+                //g2d.rotate(Math.PI / 2, x + width + leaderOffset + 10, rightCenterY + 5); 
+         // to the left of the rectangle, centered on the height
+            }
+        
     }
 
 }
