@@ -7,6 +7,7 @@ import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 public class SketchPanel extends JPanel{
@@ -16,9 +17,9 @@ public class SketchPanel extends JPanel{
     private boolean snapEnabled = true;
     private boolean gridEnabled = true;
 
-    public SketchPanel(DrawingTool drawingTool) {
+    public SketchPanel(DrawingTool drawingTool,JLabel statusLabel) {
         this.drawingTool = drawingTool;
-        this.rectManager = new RectManager();
+        this.rectManager = new RectManager(statusLabel);
 
         addMouseListener(new MouseAdapter() {
             // this is annonymous inner class

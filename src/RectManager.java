@@ -1,22 +1,28 @@
 
 import java.awt.Rectangle;
 import java.util.ArrayList;
+import javax.swing.JLabel;
 
 // Rect refers to a single rectangle object
 // Rectangles refers to collection of rectangles
 
 public class RectManager {
     private ArrayList<Rectangle> rectangles;
+    private JLabel statusLabel;
 
-    public RectManager() {
+    public RectManager(JLabel statusLabel) {
         rectangles = new ArrayList<>();
+        this.statusLabel = statusLabel;
     }
 
     public void addRect(Rectangle newRect) {
         for (Rectangle rect: rectangles){
             if (newRect.intersects(rect)) {
-                System.out.println("Cannot add RECTANGLE. Intersection ERROR!");
+                statusLabel.setText("Intersection Error!");
                 return;
+            }
+            else{
+                statusLabel.setText("Status: Ready");
             }
         }
         rectangles.add(newRect);

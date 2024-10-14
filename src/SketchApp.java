@@ -1,14 +1,12 @@
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.FlowLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-import javax.swing.JPanel;
-import javax.swing.JToggleButton;
 import javax.swing.SwingUtilities;
 
 public class SketchApp extends JFrame{
@@ -19,6 +17,7 @@ public class SketchApp extends JFrame{
     private JButton undoRect;
     boolean snapEnabled = true;
     boolean gridEnabled = true;
+    public JLabel statusLabel;
 
     public SketchApp() {
         setTitle("2D Floor Planner");
@@ -27,12 +26,24 @@ public class SketchApp extends JFrame{
         setLocationRelativeTo(null);
         getContentPane().setBackground(Color.LIGHT_GRAY);
 
+
+        //Creating label before putting in BottomBar
+        statusLabel = new JLabel("Status: Ready");
+        // bottom panel with toggle buttons
+        //createBottomBar();
+        
+
+
+
         // ----------- Initialising Area ---------------
         // the sidebat panel for switching between tools 
         toolPanel = new ToolPanel(this);
         // pass in RectTool, abstract class DrawingTool handles the implementation
-        sketchPanel = new SketchPanel(new RectTool()); 
+        sketchPanel = new SketchPanel(new RectTool(),statusLabel); 
         
+
+        BottomBar bottomBar = new BottomBar(sketchPanel, gridEnabled, snapEnabled,statusLabel);
+        add(bottomBar.getBottomBar(), BorderLayout.SOUTH);
         
         // ----------- Adding Area ---------------
         add(toolPanel, BorderLayout.WEST);
@@ -49,9 +60,8 @@ public class SketchApp extends JFrame{
 
         // top menu bar
         createMenuBar();
-
-        // bottom panel with toggle buttons
-        createBottomBar();
+        
+        
 
         setVisible(true);
 
@@ -90,29 +100,6 @@ public class SketchApp extends JFrame{
         menuBar.add(fileMenu);
         menuBar.add(editMenu);
         setJMenuBar(menuBar);
-    }
-
-    private void createBottomBar() {
-        JPanel bottomBar = new JPanel();
-        bottomBar.setLayout(new FlowLayout(FlowLayout.LEFT));
-
-        // toggle Grid Button
-        JToggleButton gridToggle = new JToggleButton("Toggle Grid", gridEnabled);
-        gridToggle.addActionListener(e -> {
-            // how exactly does isSelected() work
-            gridEnabled = gridToggle.isSelected();
-            sketchPanel.setGridEnabled(gridEnabled);
-        });
-
-        JToggleButton snapToggle = new JToggleButton("Toggle Snap", snapEnabled);
-        snapToggle.addActionListener(e -> {
-            snapEnabled = snapToggle.isSelected();
-            sketchPanel.setSnapEnabled(snapEnabled);
-        });
-
-        bottomBar.add(gridToggle);
-        bottomBar.add(snapToggle);
-        add(bottomBar, BorderLayout.SOUTH);
     }
 
     // method to change drawing tool
