@@ -1,8 +1,7 @@
 
-import java.awt.Rectangle;
 
 public abstract class DrawingTool {
-    protected Rectangle currentRect;
+    protected CanvasObject currentObject;
 
     public abstract void startDrawing(int x, int y);
 
@@ -11,8 +10,8 @@ public abstract class DrawingTool {
     public abstract void finishDrawing();
 
     // return the current shape / line
-    public Rectangle getCurrentRect() {
-        return currentRect;
+    public CanvasObject getCurrentObject() {
+        return currentObject;
     }
     
 }

@@ -31,7 +31,8 @@ public class SketchApp extends JFrame{
         // the sidebat panel for switching between tools 
         toolPanel = new ToolPanel(this);
         // pass in RectTool, abstract class DrawingTool handles the implementation
-        sketchPanel = new SketchPanel(new RectTool()); 
+        sketchPanel = new SketchPanel(new RoomTool()); 
+        // sketchPanel = new SketchPanel(new FurnitureTool()); 
         
         
         // ----------- Adding Area ---------------

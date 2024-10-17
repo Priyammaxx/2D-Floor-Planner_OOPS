@@ -1,11 +1,11 @@
-public class FurnitureTool extends DrawingTool {
+public class RoomTool extends DrawingTool {
 
     private int startX;
     private int startY;
 
     @Override
     public void startDrawing(int x, int y) {
-        currentObject = new Furniture(x, y, 0, 0);
+        currentObject = new Room(x, y, 0, 0);
         startX = x;
         startY = y;
     }
