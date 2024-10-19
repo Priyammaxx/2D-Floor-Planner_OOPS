@@ -25,13 +25,18 @@ public class SelectTool extends DrawingTool{
 
     @Override
     public void finishDrawing() {
-        // empty
+        selectedObject = null;
+    }
+
+    @Override
+    public CanvasObject getCurrentObject() {
+        return selectedObject;
     }
     
     public void deleteSelectedObject() {
         if (selectedObject != null) {
-            CanvasObjectManager.getInstance().removeObject(selectedObjects);
-            selectedObjects = null;
+            CanvasObjectManager.getInstance().removeObject(selectedObject);
+            selectedObject = null;
         }
     }
     

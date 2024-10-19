@@ -6,7 +6,9 @@ import java.awt.Graphics2D;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 
 public class SketchPanel extends JPanel{
     private DrawingTool drawingTool;
@@ -16,9 +18,27 @@ public class SketchPanel extends JPanel{
     private boolean snapEnabled = true;
     private boolean gridEnabled = true;
     private int offsetX, offsetY; // offset when dragging an object
+    private JPopupMenu selectMenu;
 
     public SketchPanel(DrawingTool DrawingTool) {
         this.drawingTool = DrawingTool;
+        
+        // --------- Select Menu implementation ----------
+        selectMenu = new JPopupMenu();
+        // selectMenu.setBounds(200,100,150,200);
+
+        JMenuItem move = new JMenuItem("Move");
+        JMenuItem rotateLeft = new JMenuItem("Rotate Anti-Clockwise");
+        JMenuItem rotateRight = new JMenuItem("Rotate Clockwise");
+        JMenuItem delete = new JMenuItem("Delete");
+
+        selectMenu.add(move);
+        selectMenu.add(rotateLeft);
+        selectMenu.add(rotateRight);
+        selectMenu.add(delete);
+
+        add(selectMenu);
+        // ---------- new code over --------------
 
         addMouseListener(new MouseAdapter() {
             // this is annonymous inner class
@@ -31,17 +51,27 @@ public class SketchPanel extends JPanel{
             @Override
             public void mouseReleased(MouseEvent e) {
                 CanvasObject finishedObject = drawingTool.getCurrentObject();
-                drawingTool.finishDrawing();
                 if (finishedObject != null) {
-                    objectManager.addObject(finishedObject);
+                    if (drawingTool instanceof  SelectTool) {
+                        showPopup(e);
+                    } else {
+                        objectManager.addObject(finishedObject);
+                    }
                 }
                 // if (drawingTool instanceof SelectTool) {
-                //     selectedObject = null;
-                // } else {
-                //     objects.add(drawingTool.getCurrentObject());
-                //     drawingTool.finishDrawing();
-                // }
+                    //     selectedObject = null;
+                    // } else {
+                        //     objects.add(drawingTool.getCurrentObject());
+                        //     drawingTool.finishDrawing();
+                        // }
+                drawingTool.finishDrawing();
                 repaint();
+            }
+
+            private void showPopup(MouseEvent e) {
+                if (e.isPopupTrigger()) {
+                    selectMenu.show(e.getComponent(),e.getX(), e.getY());
+                }
             }
         });
 
@@ -117,7 +147,8 @@ public class SketchPanel extends JPanel{
         repaint();
     }
 
-
+    // ------------- Draw Methods ---------------
+    
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g); // don't know how it works, why it works
