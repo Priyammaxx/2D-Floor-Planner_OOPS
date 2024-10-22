@@ -19,6 +19,9 @@ public class CanvasObjectManager {
     }
 
     public void addObject(CanvasObject newObject) {
+        if (newObject.width == 0 || newObject.height == 0) {
+            return;
+        }
         for (CanvasObject object : objects) {
             if (object.intersects(newObject)) {
                 System.out.println("Intersection ERROR!");

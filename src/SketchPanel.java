@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
@@ -22,6 +21,7 @@ public class SketchPanel extends JPanel{
     private int offsetX, offsetY; // offset when dragging an object
     private JPopupMenu selectMenu;
     CanvasObject finishedObject;
+    CanvasObject copiedObject;
 
     public SketchPanel(DrawingTool DrawingTool) {
         this.drawingTool = DrawingTool;
@@ -30,23 +30,29 @@ public class SketchPanel extends JPanel{
         selectMenu = new JPopupMenu();
         // selectMenu.setBounds(200,100,150,200);
 
-        JMenuItem move = new JMenuItem("Move");
-        JMenuItem rotateLeft = new JMenuItem("Rotate Anti-Clockwise");
-        JMenuItem rotateRight = new JMenuItem("Rotate Clockwise");
+        JMenuItem rotateAntiClockwise = new JMenuItem("Rotate Anti-Clockwise");
+        JMenuItem rotateClockwise = new JMenuItem("Rotate Clockwise");
         JMenuItem delete = new JMenuItem("Delete");
 
-        delete.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                CanvasObjectManager.getInstance().removeObject(finishedObject);
-                repaint();
-            }
-            
+        // ------ Select Menu functionalities ------------
+        rotateAntiClockwise.addActionListener((ActionEvent e) -> {
+            finishedObject.rotateAntiClockwise();
+            // Some Problem with this!!
+            repaint();
+        });
+        rotateClockwise.addActionListener((ActionEvent e) -> {
+            finishedObject.rotateClockwise();
+            // Some Problem with this!!
+            repaint();
+        });
+        delete.addActionListener((ActionEvent e) -> {
+            objectManager.removeObject(finishedObject);
+            // CanvasObjectManager.getInstance().removeObject(finishedObject);
+            repaint();
         });
 
-        selectMenu.add(move);
-        selectMenu.add(rotateLeft);
-        selectMenu.add(rotateRight);
+        selectMenu.add(rotateAntiClockwise);
+        selectMenu.add(rotateClockwise);
         selectMenu.add(delete);
 
         add(selectMenu);
@@ -57,6 +63,12 @@ public class SketchPanel extends JPanel{
             @Override
             public void mousePressed(MouseEvent e) {
                 drawingTool.startDrawing(snapToGrid(e.getX()), snapToGrid(e.getY()));
+                if (drawingTool instanceof SelectTool) {
+                    // create clone so that reference is not updated similar to finished object
+                    if (drawingTool.getCurrentObject() != null) {
+                        copiedObject = (CanvasObject)drawingTool.getCurrentObject().clone();
+                    }
+                }
                 repaint();
             }
 
@@ -64,7 +76,15 @@ public class SketchPanel extends JPanel{
             public void mouseReleased(MouseEvent e) {
                 finishedObject = drawingTool.getCurrentObject();
                 if (finishedObject != null) {
-                    if (drawingTool instanceof  SelectTool) {
+                    if (drawingTool instanceof SelectTool) {
+                        if (moveCollision()) {
+                            System.out.println("Collision detected on MOVE");
+                            CanvasObjectManager.getInstance().removeObject(finishedObject);
+                            objectManager.addObject(copiedObject);
+                        } 
+                        // else {
+                        //     copiedObject = null;
+                        // }
                         showPopup(e);
                     } else {
                         objectManager.addObject(finishedObject);
@@ -92,30 +112,19 @@ public class SketchPanel extends JPanel{
             @Override
             public void mouseDragged(MouseEvent e) {
                 drawingTool.continueDrawing(snapToGrid(e.getX()), snapToGrid(e.getY()));
-                // if (selectedObject != null) {
-                //     // move selected object
-                //     selectedObject.setPosition(e.getX() - offsetX, e.getY() - offsetY);
-                // } else {
-                //     drawingTool.continueDrawing(snapToGrid(e.getX()), snapToGrid(e.getY()));
-                // }
                 repaint();
             }
         });
+    }
 
-        // handle deletion of an object
-        // but does this work??
-        // getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
-        //     KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0), "deleteObject");
-        // getActionMap().put("deleteObject", new AbstractAction() {
-        //     // @Override
-        //     public void actionPerformed(ActionEvent e) {
-        //         if (selectedObject != null) {
-        //             objects.remove(selectedObject);
-        //             selectedObject = null;
-        //             repaint();
-        //         }
-        //     }
-        // });
+    // checking collision when moving objects around
+    boolean moveCollision() {
+        for (CanvasObject object: objectManager.getObjects()) {
+            if (!object.equals(finishedObject) && object.intersects(finishedObject)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     // snap coordinates to the nearest grid point
