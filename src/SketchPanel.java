@@ -3,6 +3,8 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
@@ -19,6 +21,7 @@ public class SketchPanel extends JPanel{
     private boolean gridEnabled = true;
     private int offsetX, offsetY; // offset when dragging an object
     private JPopupMenu selectMenu;
+    CanvasObject finishedObject;
 
     public SketchPanel(DrawingTool DrawingTool) {
         this.drawingTool = DrawingTool;
@@ -31,6 +34,15 @@ public class SketchPanel extends JPanel{
         JMenuItem rotateLeft = new JMenuItem("Rotate Anti-Clockwise");
         JMenuItem rotateRight = new JMenuItem("Rotate Clockwise");
         JMenuItem delete = new JMenuItem("Delete");
+
+        delete.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                CanvasObjectManager.getInstance().removeObject(finishedObject);
+                repaint();
+            }
+            
+        });
 
         selectMenu.add(move);
         selectMenu.add(rotateLeft);
@@ -50,7 +62,7 @@ public class SketchPanel extends JPanel{
 
             @Override
             public void mouseReleased(MouseEvent e) {
-                CanvasObject finishedObject = drawingTool.getCurrentObject();
+                finishedObject = drawingTool.getCurrentObject();
                 if (finishedObject != null) {
                     if (drawingTool instanceof  SelectTool) {
                         showPopup(e);

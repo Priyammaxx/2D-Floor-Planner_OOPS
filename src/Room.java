@@ -23,8 +23,8 @@ public class Room extends CanvasObject{
 
     @Override
     public boolean contains(int x, int y) {
-        Rectangle tempRect = this; // if temp not created then this.contains() calls itself recursively
-        return tempRect.contains(x, y);
+        Rectangle tempRect = new Rectangle(this.x, this.y, this.width, this.height);
+        return tempRect.contains(x,y);
     }
 
     @Override
