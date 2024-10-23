@@ -36,12 +36,24 @@ public class SketchPanel extends JPanel{
 
         // ------ Select Menu functionalities ------------
         rotateAntiClockwise.addActionListener((ActionEvent e) -> {
+            // copiedObject = (CanvasObject)finishedObject.clone();
             finishedObject.rotateAntiClockwise();
+            if (moveCollision(finishedObject)) {
+                System.out.println("Collision detected on ROTATE");
+                CanvasObjectManager.getInstance().removeObject(finishedObject);
+                objectManager.addObject(copiedObject);
+            }
+            
             // Some Problem with this!!
             repaint();
         });
         rotateClockwise.addActionListener((ActionEvent e) -> {
             finishedObject.rotateClockwise();
+            if (moveCollision(finishedObject)) {
+                System.out.println("Collision detected on ROTATE");
+                CanvasObjectManager.getInstance().removeObject(finishedObject);
+                objectManager.addObject(copiedObject);
+            }
             // Some Problem with this!!
             repaint();
         });
@@ -77,7 +89,7 @@ public class SketchPanel extends JPanel{
                 finishedObject = drawingTool.getCurrentObject();
                 if (finishedObject != null) {
                     if (drawingTool instanceof SelectTool) {
-                        if (moveCollision()) {
+                        if (moveCollision(finishedObject)) {
                             System.out.println("Collision detected on MOVE");
                             CanvasObjectManager.getInstance().removeObject(finishedObject);
                             objectManager.addObject(copiedObject);
@@ -118,9 +130,10 @@ public class SketchPanel extends JPanel{
     }
 
     // checking collision when moving objects around
-    boolean moveCollision() {
+    boolean moveCollision(CanvasObject selectedObject) {
         for (CanvasObject object: objectManager.getObjects()) {
-            if (!object.equals(finishedObject) && object.intersects(finishedObject)) {
+            if (!object.equals(selectedObject) && object.intersects(selectedObject) &&
+            (object instanceof Room && selectedObject instanceof Furniture && !object.contains(selectedObject))) {
                 return true;
             }
         }
