@@ -18,3 +18,5 @@ The workspace contains two folders by default, where:
 - `lib`: the folder to maintain dependencies
 
 Run SketchApp.java to run program. Meanwhile, the compiled output files will be generated in the `bin` folder by default.
+
+...Work in progress
