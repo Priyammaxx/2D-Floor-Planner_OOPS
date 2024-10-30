@@ -23,7 +23,9 @@ public class CanvasObjectManager {
             return;
         }
         for (CanvasObject object : objects) {
-            if (object.intersects(newObject) && !(object instanceof Room && newObject instanceof Furniture && object.contains(newObject))) {
+            if (object.intersects(newObject) && 
+            !(object instanceof Room && newObject instanceof Furniture && object.contains(newObject))
+            && !(newObject instanceof Room && object instanceof Furniture && newObject.contains(object))) {
                 System.out.println("Intersection ERROR!");
                 return;
             }
