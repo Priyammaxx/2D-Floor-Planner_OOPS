@@ -10,6 +10,7 @@ public class Room extends CanvasObject{
         this.y = y;
         this.width = width;
         this.height = height;
+        layer = 0; // newly added
     }
 
     @Override
