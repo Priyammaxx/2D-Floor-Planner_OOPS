@@ -6,6 +6,9 @@ import java.util.ArrayList;
 public class CanvasObjectManager {
     private ArrayList<CanvasObject> objects;
     private static CanvasObjectManager instance;
+    // keep track of index of first object of each layer
+    // Room: 0, Furniture: 1, Door & Window: 3
+    private int[] layerIndex = {-1,-1,-1};
 
     private CanvasObjectManager() {
         objects = new ArrayList<>();
@@ -30,7 +33,30 @@ public class CanvasObjectManager {
                 return;
             }
         }
-        objects.add(newObject);
+
+        // switch case can be used here but should it be?
+        if (newObject.layer == 0) {
+            // layer0 object at first index
+            objects.add(0,newObject);
+        } else if (newObject.layer == 2) {
+            // layer 2 object at last index
+            objects.add(newObject);
+        } else {
+            if (layerIndex[2] != -1)
+                // if layer2 object present then insert at the position of first of its object
+                objects.add(layerIndex[2], newObject);
+            else
+                // layer2 object absent, add layer1 object at end
+                objects.add(newObject);
+        }
+
+        for (int i = objects.size() - 1; i >= 0; i--) {
+            if(objects.get(i).layer == 0) layerIndex[0] = i;
+            if(objects.get(i).layer == 1) layerIndex[1] = i;
+            if(objects.get(i).layer == 2) layerIndex[2] = i;
+            
+        }
+        // objects.add(newObject);
     }
 
     public void removeObject(CanvasObject object) {
@@ -38,9 +64,9 @@ public class CanvasObjectManager {
     }
 
     public CanvasObject getObjectAt(int x, int y) {
-        for (CanvasObject object : objects) {
-            if (object.contains(x,y)) {
-                return object;
+        for (int i = objects.size() - 1; i >= 0; i--) {
+            if (objects.get(i).contains(x,y)) {
+                return objects.get(i);
             }
         }
         return null;
