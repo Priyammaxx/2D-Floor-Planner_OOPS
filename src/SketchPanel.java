@@ -184,6 +184,10 @@ public class SketchPanel extends JPanel{
         this.drawingTool = tool;
     }
 
+    public DrawingTool getDrawingTool() {
+        return this.drawingTool;
+    }
+
 
     // -------Toggle Features Area------------
     
