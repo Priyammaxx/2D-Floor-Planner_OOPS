@@ -1,14 +1,20 @@
 
 import java.util.ArrayList;
+import javax.swing.JLabel;
 
 // singleton class
 // because there should be a single object manager that contains all the canvas objects
 public class CanvasObjectManager {
     private ArrayList<CanvasObject> objects;
     private static CanvasObjectManager instance;
+    private JLabel statusLabel;
 
     private CanvasObjectManager() {
         objects = new ArrayList<>();
+    }
+
+    public void getLabel( JLabel statusLabel){
+        this.statusLabel = statusLabel;
     }
 
     public static CanvasObjectManager getInstance() {
@@ -23,10 +29,11 @@ public class CanvasObjectManager {
             return;
         }
         for (CanvasObject object : objects) {
-            if (object.intersects(newObject) && (object instanceof Room && newObject instanceof Furniture && !object.contains(newObject))) {
-                System.out.println("Intersection ERROR!");
+            if (object.intersects(newObject) ){//&& (object instanceof Room && newObject instanceof Furniture && !object.contains(newObject))) {
+                statusLabel.setText("Intersection ERROR!");
                 return;
             }
+            else statusLabel.setText("Status: Ready");
         }
         objects.add(newObject);
     }
