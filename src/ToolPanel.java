@@ -1,6 +1,7 @@
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
+import java.awt.Color;
 import java.awt.GridLayout;
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -51,6 +52,28 @@ public class ToolPanel extends JPanel {
         JButton kitchenRoomButton = new JButton("Kitchen"); // red
         JButton drawingRoomButton = new JButton("Drawing Room"); // yellow or orange
         
+        // color functionality to different types of rooms
+        bedRoomButton.addActionListener(e -> {
+            if (app.getDrawingTool() instanceof RoomTool roomTool) {
+                    roomTool.setColor(Color.green);
+            }
+        });
+        bathRoomButton.addActionListener(e -> {
+            if (app.getDrawingTool() instanceof RoomTool roomTool) {
+                    roomTool.setColor(Color.blue);
+            }
+        });
+        kitchenRoomButton.addActionListener(e -> {
+            if (app.getDrawingTool() instanceof RoomTool roomTool) {
+                    roomTool.setColor(Color.red);
+            }
+        });
+        drawingRoomButton.addActionListener(e -> {
+            if (app.getDrawingTool() instanceof RoomTool roomTool) {
+                    roomTool.setColor(Color.orange);
+            }
+        });
+
         roomOptionsPanel.add(bedRoomButton);
         roomOptionsPanel.add(bathRoomButton);
         roomOptionsPanel.add(kitchenRoomButton);
