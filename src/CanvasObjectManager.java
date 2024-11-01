@@ -38,7 +38,6 @@ public class CanvasObjectManager {
                 statusLabel.setText("Intersection ERROR!");
                 return;
             }
-            else statusLabel.setText("Status: Ready");
         }
 
         // switch case can be used here but should it be?

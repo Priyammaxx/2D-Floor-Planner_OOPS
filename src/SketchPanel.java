@@ -58,7 +58,6 @@ public class SketchPanel extends JPanel{
         rotateClockwise.addActionListener((ActionEvent e) -> {
             finishedObject.rotate();
             if (rotateCollision(finishedObject)) {
-
                 System.out.println("Collision detected on ROTATE");
                 //statusLabel.setText("Intersection ERROR!");
 

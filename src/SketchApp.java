@@ -154,13 +154,6 @@ public class SketchApp extends JFrame{
         return sketchPanel.getDrawingTool();
     }
 
-   
-
-    
-   
-
-
-
     public static void main(String[] args) throws Exception {
         SwingUtilities.invokeLater(SketchApp::new);
     }
