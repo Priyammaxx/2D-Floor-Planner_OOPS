@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.FlowLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -19,6 +20,7 @@ public class SketchApp extends JFrame{
     private JButton undoRect;
     boolean snapEnabled = true;
     boolean gridEnabled = true;
+    private JLabel statusLabel;
 
     public SketchApp() {
         setTitle("2D Floor Planner");
@@ -27,12 +29,25 @@ public class SketchApp extends JFrame{
         setLocationRelativeTo(null);
         getContentPane().setBackground(Color.LIGHT_GRAY);
 
+
+        
+
         // ----------- Initialising Area ---------------
         // the sidebat panel for switching between tools 
         toolPanel = new ToolPanel(this);
         // pass in RectTool, abstract class DrawingTool handles the implementation
         sketchPanel = new SketchPanel(new RoomTool()); 
-        // sketchPanel = new SketchPanel(new FurnitureTool()); 
+        // sketchPanel = new SketchPanel(new FurnitureTool());
+        
+        //Calling this method before because I need instance of statusLabel to put into CanvasObejctManager
+        createBottomBar();
+
+        //Hopefully this gets me the same instance of objectManager as declared in SketchPanel
+        CanvasObjectManager objectManager = CanvasObjectManager.getInstance();
+        objectManager.getLabel(statusLabel);
+        
+        //Sending Label to SketchPanel for move collision detections
+        sketchPanel.getJLabel(statusLabel);
         
         
         // ----------- Adding Area ---------------
@@ -52,7 +67,7 @@ public class SketchApp extends JFrame{
         createMenuBar();
 
         // bottom panel with toggle buttons
-        createBottomBar();
+        
 
         setVisible(true);
 
@@ -63,6 +78,7 @@ public class SketchApp extends JFrame{
         JMenuBar menuBar = new JMenuBar();
         JMenu fileMenu = new JMenu("File");
         
+        
         // idea : try adding Menu item directly to menu bar
         JMenuItem newFile = new JMenuItem("New");
         JMenuItem openFile = new JMenuItem("Open");
@@ -70,16 +86,21 @@ public class SketchApp extends JFrame{
         JMenuItem closeFile = new JMenuItem("Close");
 
         // Functionality of these buttons comes here
-        // 
-        // 
-        // 
         // will be implemented shortly
+
+
+        //Implementing save feature
+        //saveFile.addActionListener(e -> saveFloorPlan(this));
 
         fileMenu.add(newFile);
         fileMenu.add(openFile);
         fileMenu.add(saveFile);
         fileMenu.add(closeFile);
 
+
+
+
+        //--------------------This is a different menu----------------------------- 
         JMenu editMenu = new JMenu("Edit");
         JMenuItem undoItem = new JMenuItem("Undo");
         // undo function implemented here
@@ -103,16 +124,22 @@ public class SketchApp extends JFrame{
             // how exactly does isSelected() work
             gridEnabled = gridToggle.isSelected();
             sketchPanel.setGridEnabled(gridEnabled);
+            statusLabel.setText("Grid " + (gridEnabled ? "Enabled" : "Disabled"));
         });
 
         JToggleButton snapToggle = new JToggleButton("Toggle Snap", snapEnabled);
         snapToggle.addActionListener(e -> {
             snapEnabled = snapToggle.isSelected();
             sketchPanel.setSnapEnabled(snapEnabled);
+            statusLabel.setText("Snap " + (snapEnabled? "Enabled" : "Disabled"));
         });
+
+        //Adding status label
+        statusLabel = new JLabel("Status: Ready");
 
         bottomBar.add(gridToggle);
         bottomBar.add(snapToggle);
+        bottomBar.add(statusLabel);
         add(bottomBar, BorderLayout.SOUTH);
     }
 
@@ -120,6 +147,11 @@ public class SketchApp extends JFrame{
     // right now does nothing? Is it being called somewhere
     public void setDrawingTool(DrawingTool tool) {
         sketchPanel.setDrawingTool(tool);
+    }
+
+    // this is used in ToolPanel to set room colors and furniture objects
+    public DrawingTool getDrawingTool() {
+        return sketchPanel.getDrawingTool();
     }
 
     public static void main(String[] args) throws Exception {

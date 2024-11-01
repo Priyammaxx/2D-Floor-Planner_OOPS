@@ -1,11 +1,14 @@
+import java.awt.Color;
+
 public class RoomTool extends DrawingTool {
 
     private int startX;
     private int startY;
+    private Color color = Color.green; // set as room by default
 
     @Override
     public void startDrawing(int x, int y) {
-        currentObject = new Room(x, y, 0, 0);
+        currentObject = new Room(x, y, 0, 0, color);
         startX = x;
         startY = y;
     }
@@ -25,4 +28,7 @@ public class RoomTool extends DrawingTool {
         currentObject = null;
     }
     
+    public void setColor(Color color) {
+        this.color = color;
+    }
 }

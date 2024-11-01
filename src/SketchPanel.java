@@ -7,9 +7,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
+import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
+import javax.swing.SwingUtilities;
 
 public class SketchPanel extends JPanel{
     private DrawingTool drawingTool;
@@ -22,9 +24,11 @@ public class SketchPanel extends JPanel{
     private JPopupMenu selectMenu;
     CanvasObject finishedObject;
     CanvasObject copiedObject;
+    private JLabel statusLabel;
 
     public SketchPanel(DrawingTool DrawingTool) {
         this.drawingTool = DrawingTool;
+        //this.statusLabel = statusLabel;
         
         // --------- Select Menu implementation ----------
         selectMenu = new JPopupMenu();
@@ -40,6 +44,7 @@ public class SketchPanel extends JPanel{
             finishedObject.rotate();
             if (rotateCollision(finishedObject)) {
                 System.out.println("Collision detected on ROTATE");
+                
                 CanvasObjectManager.getInstance().removeObject(finishedObject);
                 objectManager.addObject(copiedObject);
             } else {
@@ -54,6 +59,8 @@ public class SketchPanel extends JPanel{
             finishedObject.rotate();
             if (rotateCollision(finishedObject)) {
                 System.out.println("Collision detected on ROTATE");
+                //statusLabel.setText("Intersection ERROR!");
+
                 CanvasObjectManager.getInstance().removeObject(finishedObject);
                 objectManager.addObject(copiedObject);
             } else {
@@ -136,11 +143,26 @@ public class SketchPanel extends JPanel{
         });
     }
 
+
+    public void getJLabel(JLabel statusLabel){
+        this.statusLabel = statusLabel;
+    }
+
+    private void updateStatusLabel(String message) {
+        if (statusLabel != null) {
+            SwingUtilities.invokeLater(() -> statusLabel.setText(message));
+        }
+    }
+
+
     // checking collision when moving objects around
     boolean moveCollision(CanvasObject selectedObject) {
         for (CanvasObject object: objectManager.getObjects()) {
             if (!object.equals(selectedObject) && object.intersects(selectedObject) &&
             !(object instanceof Room && selectedObject instanceof Furniture && object.contains(selectedObject))) {
+                
+                updateStatusLabel("Intersection on collision");
+
                 return true;
             }
         }
@@ -151,6 +173,7 @@ public class SketchPanel extends JPanel{
             if (selectedObject != object && 
             !copiedObject.contains(object) && 
             selectedObject.intersects(object)) {
+                updateStatusLabel("Intersection on collision");
                 return true;
             }
         }
@@ -182,6 +205,10 @@ public class SketchPanel extends JPanel{
     // this method is called by SketchApp, in SkethApp it is called by ToolPanel
     public void setDrawingTool(DrawingTool tool) {
         this.drawingTool = tool;
+    }
+
+    public DrawingTool getDrawingTool() {
+        return this.drawingTool;
     }
 
 
