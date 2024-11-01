@@ -12,6 +12,7 @@ public class Furniture extends CanvasObject{
         this.y = y;
         this.width = width;
         this.height = height;
+        layer = 1; // newly added
     }
 
     @Override

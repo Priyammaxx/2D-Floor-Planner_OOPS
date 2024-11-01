@@ -37,23 +37,30 @@ public class SketchPanel extends JPanel{
         // ------ Select Menu functionalities ------------
         rotateAntiClockwise.addActionListener((ActionEvent e) -> {
             // copiedObject = (CanvasObject)finishedObject.clone();
-            finishedObject.rotateAntiClockwise();
-            if (moveCollision(finishedObject)) {
+            finishedObject.rotate();
+            if (rotateCollision(finishedObject)) {
                 System.out.println("Collision detected on ROTATE");
                 CanvasObjectManager.getInstance().removeObject(finishedObject);
                 objectManager.addObject(copiedObject);
+            } else {
+                finishedObject.rotate();
+                RotationUtility.RotateWithContained(objectManager, finishedObject, -90);
             }
             
             // Some Problem with this!!
             repaint();
         });
         rotateClockwise.addActionListener((ActionEvent e) -> {
-            finishedObject.rotateClockwise();
-            if (moveCollision(finishedObject)) {
+            finishedObject.rotate();
+            if (rotateCollision(finishedObject)) {
                 System.out.println("Collision detected on ROTATE");
                 CanvasObjectManager.getInstance().removeObject(finishedObject);
                 objectManager.addObject(copiedObject);
+            } else {
+                finishedObject.rotate();
+                RotationUtility.RotateWithContained(objectManager, finishedObject, 90);
             }
+
             // Some Problem with this!!
             repaint();
         });
@@ -133,7 +140,17 @@ public class SketchPanel extends JPanel{
     boolean moveCollision(CanvasObject selectedObject) {
         for (CanvasObject object: objectManager.getObjects()) {
             if (!object.equals(selectedObject) && object.intersects(selectedObject) &&
-            (object instanceof Room && selectedObject instanceof Furniture && !object.contains(selectedObject))) {
+            !(object instanceof Room && selectedObject instanceof Furniture && object.contains(selectedObject))) {
+                return true;
+            }
+        }
+        return false;
+    }
+    boolean rotateCollision(CanvasObject selectedObject) {
+        for (CanvasObject object: objectManager.getObjects()) {
+            if (selectedObject != object && 
+            !copiedObject.contains(object) && 
+            selectedObject.intersects(object)) {
                 return true;
             }
         }
@@ -165,6 +182,10 @@ public class SketchPanel extends JPanel{
     // this method is called by SketchApp, in SkethApp it is called by ToolPanel
     public void setDrawingTool(DrawingTool tool) {
         this.drawingTool = tool;
+    }
+
+    public DrawingTool getDrawingTool() {
+        return this.drawingTool;
     }
 
 

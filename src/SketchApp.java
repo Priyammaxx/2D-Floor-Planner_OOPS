@@ -141,6 +141,11 @@ public class SketchApp extends JFrame{
         sketchPanel.setDrawingTool(tool);
     }
 
+    // this is used in ToolPanel to set room colors and furniture objects
+    public DrawingTool getDrawingTool() {
+        return sketchPanel.getDrawingTool();
+    }
+
     public static void main(String[] args) throws Exception {
         SwingUtilities.invokeLater(SketchApp::new);
     }
