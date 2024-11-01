@@ -9,6 +9,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
@@ -71,6 +72,7 @@ public class SketchPanel extends JPanel{
             // Some Problem with this!!
             repaint();
         });
+
         delete.addActionListener((ActionEvent e) -> {
             objectManager.removeObject(finishedObject);
             // CanvasObjectManager.getInstance().removeObject(finishedObject);
@@ -105,6 +107,7 @@ public class SketchPanel extends JPanel{
                     if (drawingTool instanceof SelectTool) {
                         if (moveCollision(finishedObject)) {
                             System.out.println("Collision detected on MOVE");
+                            JOptionPane.showMessageDialog(null, "Click OK to revert to previous position", "Overlap Detected", JOptionPane.OK_OPTION, null);
                             CanvasObjectManager.getInstance().removeObject(finishedObject);
                             objectManager.addObject(copiedObject);
                         } 
@@ -159,7 +162,8 @@ public class SketchPanel extends JPanel{
     boolean moveCollision(CanvasObject selectedObject) {
         for (CanvasObject object: objectManager.getObjects()) {
             if (!object.equals(selectedObject) && object.intersects(selectedObject) &&
-            !(object instanceof Room && selectedObject instanceof Furniture && object.contains(selectedObject))) {
+            !(object instanceof Room && selectedObject instanceof Furniture && object.contains(selectedObject))
+            && !(selectedObject instanceof Room && object instanceof Furniture && selectedObject.contains(object))) {
                 
                 updateStatusLabel("Intersection on collision");
 
