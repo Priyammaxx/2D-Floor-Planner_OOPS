@@ -1,17 +1,23 @@
 
 import java.util.ArrayList;
+import javax.swing.JLabel;
 
 // singleton class
 // because there should be a single object manager that contains all the canvas objects
 public class CanvasObjectManager {
     private ArrayList<CanvasObject> objects;
     private static CanvasObjectManager instance;
+    private JLabel statusLabel;
     // keep track of index of first object of each layer
     // Room: 0, Furniture: 1, Door & Window: 3
     private int[] layerIndex = {-1,-1,-1};
 
     private CanvasObjectManager() {
         objects = new ArrayList<>();
+    }
+
+    public void getLabel( JLabel statusLabel){
+        this.statusLabel = statusLabel;
     }
 
     public static CanvasObjectManager getInstance() {
@@ -29,7 +35,7 @@ public class CanvasObjectManager {
             if (object.intersects(newObject) && 
             !(object instanceof Room && newObject instanceof Furniture && object.contains(newObject))
             && !(newObject instanceof Room && object instanceof Furniture && newObject.contains(object))) {
-                System.out.println("Intersection ERROR!");
+                statusLabel.setText("Intersection ERROR!");
                 return;
             }
         }
@@ -61,6 +67,7 @@ public class CanvasObjectManager {
 
     public void removeObject(CanvasObject object) {
         objects.remove(object);
+        statusLabel.setText("Object deleted");
     }
 
     public CanvasObject getObjectAt(int x, int y) {
@@ -69,6 +76,7 @@ public class CanvasObjectManager {
                 return objects.get(i);
             }
         }
+        
         return null;
     }
 
