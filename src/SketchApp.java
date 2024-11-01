@@ -46,6 +46,9 @@ public class SketchApp extends JFrame{
         CanvasObjectManager objectManager = CanvasObjectManager.getInstance();
         objectManager.getLabel(statusLabel);
         
+        //Sending Label to SketchPanel for move collision detections
+        sketchPanel.getJLabel(statusLabel);
+        
         
         // ----------- Adding Area ---------------
         add(toolPanel, BorderLayout.WEST);
@@ -83,16 +86,21 @@ public class SketchApp extends JFrame{
         JMenuItem closeFile = new JMenuItem("Close");
 
         // Functionality of these buttons comes here
-        // 
-        // 
-        // 
         // will be implemented shortly
+
+
+        //Implementing save feature
+        //saveFile.addActionListener(e -> saveFloorPlan(this));
 
         fileMenu.add(newFile);
         fileMenu.add(openFile);
         fileMenu.add(saveFile);
         fileMenu.add(closeFile);
 
+
+
+
+        //--------------------This is a different menu----------------------------- 
         JMenu editMenu = new JMenu("Edit");
         JMenuItem undoItem = new JMenuItem("Undo");
         // undo function implemented here
@@ -145,6 +153,13 @@ public class SketchApp extends JFrame{
     public DrawingTool getDrawingTool() {
         return sketchPanel.getDrawingTool();
     }
+
+   
+
+    
+   
+
+
 
     public static void main(String[] args) throws Exception {
         SwingUtilities.invokeLater(SketchApp::new);

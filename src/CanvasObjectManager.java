@@ -35,7 +35,7 @@ public class CanvasObjectManager {
             if (object.intersects(newObject) && 
             !(object instanceof Room && newObject instanceof Furniture && object.contains(newObject))
             && !(newObject instanceof Room && object instanceof Furniture && newObject.contains(object))) {
-                System.out.println("Intersection ERROR!");
+                statusLabel.setText("Intersection ERROR!");
                 return;
             }
             else statusLabel.setText("Status: Ready");
@@ -68,6 +68,7 @@ public class CanvasObjectManager {
 
     public void removeObject(CanvasObject object) {
         objects.remove(object);
+        statusLabel.setText("Object deleted");
     }
 
     public CanvasObject getObjectAt(int x, int y) {
@@ -76,6 +77,7 @@ public class CanvasObjectManager {
                 return objects.get(i);
             }
         }
+        
         return null;
     }
 
