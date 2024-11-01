@@ -73,6 +73,8 @@ public class ToolPanel extends JPanel {
                     roomTool.setColor(Color.orange);
             }
         });
+        bedRoomButton.setBackground(Color.green);
+        bathRoomButton.setBackground(Color.blue);
 
         roomOptionsPanel.add(bedRoomButton);
         roomOptionsPanel.add(bathRoomButton);
