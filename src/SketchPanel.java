@@ -79,8 +79,8 @@ public class SketchPanel extends JPanel{
             repaint();
         });
 
-        selectMenu.add(rotateAntiClockwise);
         selectMenu.add(rotateClockwise);
+        selectMenu.add(rotateAntiClockwise);
         selectMenu.add(delete);
 
         add(selectMenu);
@@ -165,7 +165,7 @@ public class SketchPanel extends JPanel{
             !(object instanceof Room && selectedObject instanceof Furniture && object.contains(selectedObject))
             && !(selectedObject instanceof Room && object instanceof Furniture && selectedObject.contains(object))) {
                 
-                updateStatusLabel("Intersection on collision");
+                updateStatusLabel("Collision on move");
 
                 return true;
             }
@@ -177,7 +177,7 @@ public class SketchPanel extends JPanel{
             if (selectedObject != object && 
             !copiedObject.contains(object) && 
             selectedObject.intersects(object)) {
-                updateStatusLabel("Intersection on collision");
+                updateStatusLabel("Collision on rotate");
                 return true;
             }
         }
