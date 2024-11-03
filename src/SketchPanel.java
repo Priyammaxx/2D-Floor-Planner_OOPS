@@ -79,8 +79,8 @@ public class SketchPanel extends JPanel{
             repaint();
         });
 
-        selectMenu.add(rotateAntiClockwise);
         selectMenu.add(rotateClockwise);
+        selectMenu.add(rotateAntiClockwise);
         selectMenu.add(delete);
 
         add(selectMenu);
@@ -108,7 +108,7 @@ public class SketchPanel extends JPanel{
                         if (moveCollision(finishedObject)) {
                             System.out.println("Collision detected on MOVE");
                             JOptionPane.showMessageDialog(null, "Click OK to revert to previous position", "Overlap Detected", JOptionPane.OK_OPTION, null);
-                            CanvasObjectManager.getInstance().removeObject(finishedObject);
+                            objectManager.removeObject(finishedObject);
                             objectManager.addObject(copiedObject);
                         } 
                         // else {
@@ -154,6 +154,7 @@ public class SketchPanel extends JPanel{
     private void updateStatusLabel(String message) {
         if (statusLabel != null) {
             SwingUtilities.invokeLater(() -> statusLabel.setText(message));
+            // statusLabel.setText(message);
         }
     }
 
@@ -162,10 +163,10 @@ public class SketchPanel extends JPanel{
     boolean moveCollision(CanvasObject selectedObject) {
         for (CanvasObject object: objectManager.getObjects()) {
             if (!object.equals(selectedObject) && object.intersects(selectedObject) &&
-            !(object instanceof Room && selectedObject instanceof Furniture && object.contains(selectedObject))
+            !(object instanceof Room && selectedObject instanceof Furniture && object.contains(selectedObject)) 
             && !(selectedObject instanceof Room && object instanceof Furniture && selectedObject.contains(object))) {
                 
-                updateStatusLabel("Intersection on collision");
+                updateStatusLabel("Collision on move");
 
                 return true;
             }
@@ -177,7 +178,7 @@ public class SketchPanel extends JPanel{
             if (selectedObject != object && 
             !copiedObject.contains(object) && 
             selectedObject.intersects(object)) {
-                updateStatusLabel("Intersection on collision");
+                updateStatusLabel("Collision on rotate");
                 return true;
             }
         }
