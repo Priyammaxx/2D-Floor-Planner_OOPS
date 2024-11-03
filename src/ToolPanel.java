@@ -20,6 +20,7 @@ public class ToolPanel extends JPanel {
         
         JButton roomToolButton = new JButton("Room Tool");        
         JButton furnitureToolButton = new JButton("Furniture Tool");
+        JButton doorToolButton = new JButton("Door Tool");
         JButton selectToolButton = new JButton("Select Tool");
         
         roomToolButton.addActionListener(e -> {
@@ -30,6 +31,10 @@ public class ToolPanel extends JPanel {
             app.setDrawingTool(new FurnitureTool());
             showOptions("Furniture");
         });
+        doorToolButton.addActionListener(e -> {
+            app.setDrawingTool(new DoorTool());
+            optionsPanel.setVisible(false);
+        });
         selectToolButton.addActionListener(e -> {
             app.setDrawingTool(new SelectTool());
             optionsPanel.setVisible(false);
@@ -38,14 +43,15 @@ public class ToolPanel extends JPanel {
         //  Main Buttons go here
         mainToolPanel.add(roomToolButton);
         mainToolPanel.add(furnitureToolButton);
+        mainToolPanel.add(doorToolButton);
         mainToolPanel.add(selectToolButton);
             
-        // Subsections for visible options by each main tool button
+        // Subsections for visible options by each main tool button -----------
         cardLayout = new CardLayout();
         optionsPanel = new JPanel(cardLayout);
         optionsPanel.setVisible(false);
 
-        // Rooms
+        // -------Rooms-----------
         JPanel roomOptionsPanel = new JPanel(new GridLayout(0,1));
         JButton bedRoomButton = new JButton("Bedroom"); // green
         JButton bathRoomButton = new JButton("Bathroom"); // blue
