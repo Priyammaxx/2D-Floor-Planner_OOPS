@@ -147,11 +147,14 @@ public class SketchApp extends JFrame{
     // right now does nothing? Is it being called somewhere
     public void setDrawingTool(DrawingTool tool) {
         sketchPanel.setDrawingTool(tool);
+        statusLabel.setText("Status: Ready");
     }
 
     // this is used in ToolPanel to set room colors and furniture objects
     public DrawingTool getDrawingTool() {
+        statusLabel.setText("Status: Ready");
         return sketchPanel.getDrawingTool();
+        
     }
 
     public static void main(String[] args) throws Exception {
