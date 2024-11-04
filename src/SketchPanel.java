@@ -1,5 +1,6 @@
-
+import javax.swing.JMenu;
 import java.awt.BasicStroke;
+import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -7,6 +8,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
+
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
@@ -25,6 +27,7 @@ public class SketchPanel extends JPanel{
     private JPopupMenu selectMenu;
     CanvasObject finishedObject;
     CanvasObject copiedObject;
+    CanvasObject clonedObject;
     private JLabel statusLabel;
 
     public SketchPanel(DrawingTool DrawingTool) {
@@ -38,7 +41,15 @@ public class SketchPanel extends JPanel{
         JMenuItem rotateAntiClockwise = new JMenuItem("Rotate Anti-Clockwise");
         JMenuItem rotateClockwise = new JMenuItem("Rotate Clockwise");
         JMenuItem delete = new JMenuItem("Delete");
-
+        JMenu addRoom = new JMenu("Add a Room");
+        JMenuItem north = new JMenuItem("North");
+        JMenuItem south = new JMenuItem("South");
+        JMenuItem east = new JMenuItem("East");
+        JMenuItem west = new JMenuItem("West");
+        addRoom.add(north); 
+        addRoom.add(south);
+        addRoom.add(east);
+        addRoom.add(west);
         // ------ Select Menu functionalities ------------
         rotateAntiClockwise.addActionListener((ActionEvent e) -> {
             // copiedObject = (CanvasObject)finishedObject.clone();
@@ -75,13 +86,66 @@ public class SketchPanel extends JPanel{
 
         delete.addActionListener((ActionEvent e) -> {
             objectManager.removeObject(finishedObject);
-            // CanvasObjectManager.getInstance().removeObject(finishedObject);
+            CanvasObjectManager.getInstance().removeObject(finishedObject);
+            repaint();
+        });
+
+        north.addActionListener((ActionEvent e) -> {
+            clonedObject = (CanvasObject)finishedObject.clone();
+            int newX = snapToGrid(finishedObject.x);
+            int newY = snapToGrid(finishedObject.y - clonedObject.height);
+            clonedObject.setBounds(newX, newY, finishedObject.width, finishedObject.height);
+            if (!moveCollision(clonedObject)) { // Check for collisions before adding
+                objectManager.addObject(clonedObject);
+                CanvasObjectManager.getInstance().addObject(clonedObject);
+            }
+            
+            repaint();
+        });
+
+        south.addActionListener((ActionEvent e) -> {
+            clonedObject = (CanvasObject)finishedObject.clone();
+            int newX = snapToGrid(finishedObject.x);
+            int newY = snapToGrid(finishedObject.y + clonedObject.height);
+            clonedObject.setBounds(newX, newY, finishedObject.width, finishedObject.height);
+            if (!moveCollision(clonedObject)) { 
+                objectManager.addObject(clonedObject);
+                CanvasObjectManager.getInstance().addObject(clonedObject);
+            }
+            
+            repaint();
+        });
+
+        east.addActionListener((ActionEvent e) -> {
+            clonedObject = (CanvasObject)finishedObject.clone();
+            int newX = snapToGrid(finishedObject.x + clonedObject.width);
+            int newY = snapToGrid(finishedObject.y);
+            clonedObject.setBounds(newX, newY, finishedObject.width, finishedObject.height);
+            if (!moveCollision(clonedObject)) { 
+                objectManager.addObject(clonedObject);
+                CanvasObjectManager.getInstance().addObject(clonedObject);
+            }
+            
+            repaint();
+        });
+
+        west.addActionListener((ActionEvent e) -> {
+            clonedObject = (CanvasObject)finishedObject.clone();
+            int newX = snapToGrid(finishedObject.x - clonedObject.width);
+            int newY = snapToGrid(finishedObject.y);
+            clonedObject.setBounds(newX, newY, finishedObject.width, finishedObject.height);
+            if (!moveCollision(clonedObject)) { 
+                objectManager.addObject(clonedObject);
+                CanvasObjectManager.getInstance().addObject(clonedObject);
+            }
+            
             repaint();
         });
 
         selectMenu.add(rotateClockwise);
         selectMenu.add(rotateAntiClockwise);
         selectMenu.add(delete);
+        selectMenu.add(addRoom);
 
         add(selectMenu);
         // ---------- new code over --------------
