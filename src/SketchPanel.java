@@ -114,6 +114,7 @@ public class SketchPanel extends JPanel{
             if (!moveCollision(clonedObject)) { 
                 objectManager.addObject(clonedObject);
                 CanvasObjectManager.getInstance().addObject(clonedObject);
+                updateStatusLabel("");
             }else{
                 updateStatusLabel("Collision on placing.");
             }
@@ -129,6 +130,7 @@ public class SketchPanel extends JPanel{
             if (!moveCollision(clonedObject)) { 
                 objectManager.addObject(clonedObject);
                 CanvasObjectManager.getInstance().addObject(clonedObject);
+                updateStatusLabel("");
             }else{
                 updateStatusLabel("Collision on placing.");
             }
@@ -144,6 +146,7 @@ public class SketchPanel extends JPanel{
             if (!moveCollision(clonedObject)) { 
                 objectManager.addObject(clonedObject);
                 CanvasObjectManager.getInstance().addObject(clonedObject);
+                updateStatusLabel("");
             }else{
                 updateStatusLabel("Collision on placing.");
             }
