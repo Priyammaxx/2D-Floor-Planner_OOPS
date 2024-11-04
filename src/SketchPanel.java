@@ -8,7 +8,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
-import java.nio.channels.Pipe.SourceChannel;
 
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
