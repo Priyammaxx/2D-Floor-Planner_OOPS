@@ -146,7 +146,7 @@ public class SketchPanel extends JPanel{
         });
     }
 
-
+    //We got the status label to put in collision and rotation detection
     public void getJLabel(JLabel statusLabel){
         this.statusLabel = statusLabel;
     }
