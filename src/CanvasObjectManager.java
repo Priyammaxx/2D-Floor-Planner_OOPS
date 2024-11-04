@@ -32,12 +32,13 @@ public class CanvasObjectManager {
             return;
         }
         for (CanvasObject object : objects) {
-            if (object.intersects(newObject) && 
-            !(object instanceof Room && newObject instanceof Furniture && object.contains(newObject))
+            if (object.intersects(newObject)
+            && !(object instanceof Room && newObject instanceof Furniture && object.contains(newObject))
             && !(newObject instanceof Room && object instanceof Furniture && newObject.contains(object))) {
                 statusLabel.setText("Intersection ERROR!");
                 return;
             }
+            else statusLabel.setText("Status: Ready");
         }
 
         // switch case can be used here but should it be?
