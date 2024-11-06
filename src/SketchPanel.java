@@ -25,18 +25,28 @@ public class SketchPanel extends JPanel{
     private boolean gridEnabled = true;
     private int offsetX, offsetY; // offset when dragging an object
     private JPopupMenu selectMenu;
+    private JPopupMenu alignmentMenu;
     CanvasObject finishedObject;
     CanvasObject copiedObject;
     CanvasObject clonedObject;
+    CanvasObject staticObject;
+    String[] positioning = new String[2];
     private JLabel statusLabel;
-
+    private boolean relativePositionLock = false;
     public SketchPanel(DrawingTool DrawingTool) {
         this.drawingTool = DrawingTool;
         //this.statusLabel = statusLabel;
         
         // --------- Select Menu implementation ----------
         selectMenu = new JPopupMenu();
+        alignmentMenu = new JPopupMenu();
+        JMenuItem left = new JMenuItem("Left"); 
+        JMenuItem center = new JMenuItem("Center"); 
+        JMenuItem right = new JMenuItem("Right"); 
         // selectMenu.setBounds(200,100,150,200);
+        alignmentMenu.add(left);
+        alignmentMenu.add(center);
+        alignmentMenu.add(right);
 
         JMenuItem rotateAntiClockwise = new JMenuItem("Rotate Anti-Clockwise");
         JMenuItem rotateClockwise = new JMenuItem("Rotate Clockwise");
@@ -91,67 +101,61 @@ public class SketchPanel extends JPanel{
         });
 
         north.addActionListener((ActionEvent e) -> {
-            clonedObject = (CanvasObject)finishedObject.clone();
-            int newX = snapToGrid(finishedObject.x);
-            int newY = snapToGrid(finishedObject.y - clonedObject.height);
-            clonedObject.setBounds(newX, newY, finishedObject.width, finishedObject.height);
-            if (!moveCollision(clonedObject)) { // Check for collisions before adding
-                objectManager.addObject(clonedObject);
-                CanvasObjectManager.getInstance().addObject(clonedObject);
-                updateStatusLabel("");
-            }else{
-                updateStatusLabel("Collision on placing.");
-            }
-            
+            positioning[0] = "N";
+            updateStatusLabel("Select a Room.");
+            relativePositionLock = true;
             repaint();
         });
 
         south.addActionListener((ActionEvent e) -> {
-            clonedObject = (CanvasObject)finishedObject.clone();
-            int newX = snapToGrid(finishedObject.x);
-            int newY = snapToGrid(finishedObject.y + clonedObject.height);
-            clonedObject.setBounds(newX, newY, finishedObject.width, finishedObject.height);
-            if (!moveCollision(clonedObject)) { 
-                objectManager.addObject(clonedObject);
-                CanvasObjectManager.getInstance().addObject(clonedObject);
-                updateStatusLabel("");
-            }else{
-                updateStatusLabel("Collision on placing.");
-            }
-            
+            positioning[0] = "S";
+            updateStatusLabel("Select a Room.");
+            relativePositionLock = true;
             repaint();
         });
 
         east.addActionListener((ActionEvent e) -> {
-            clonedObject = (CanvasObject)finishedObject.clone();
-            int newX = snapToGrid(finishedObject.x + clonedObject.width);
-            int newY = snapToGrid(finishedObject.y);
-            clonedObject.setBounds(newX, newY, finishedObject.width, finishedObject.height);
-            if (!moveCollision(clonedObject)) { 
-                objectManager.addObject(clonedObject);
-                CanvasObjectManager.getInstance().addObject(clonedObject);
-                updateStatusLabel("");
-            }else{
-                updateStatusLabel("Collision on placing.");
-            }
-            
+            positioning[0] = "E";
+            updateStatusLabel("Select a Room.");
+            relativePositionLock = true;
             repaint();
         });
 
         west.addActionListener((ActionEvent e) -> {
-            clonedObject = (CanvasObject)finishedObject.clone();
-            int newX = snapToGrid(finishedObject.x - clonedObject.width);
-            int newY = snapToGrid(finishedObject.y);
-            clonedObject.setBounds(newX, newY, finishedObject.width, finishedObject.height);
-            if (!moveCollision(clonedObject)) { 
-                objectManager.addObject(clonedObject);
-                CanvasObjectManager.getInstance().addObject(clonedObject);
-                updateStatusLabel("");
-            }else{
-                updateStatusLabel("Collision on placing.");
-            }
-            
+            positioning[0] = "W";
+            updateStatusLabel("Select a Room.");
+            relativePositionLock = true;
             repaint();
+        });
+
+        left.addActionListener((ActionEvent e) -> {
+            positioning[1] = "L";
+            updateStatusLabel("");
+            repaint();
+            relativePlacement(positioning, staticObject, clonedObject);
+            if(moveCollision(clonedObject)){
+                updateStatusLabel("Room Overlapping!");
+            }
+        });
+
+        center.addActionListener((ActionEvent e) -> {
+            positioning[1] = "C";
+            updateStatusLabel("");
+            repaint();
+            relativePlacement(positioning, staticObject, clonedObject);
+            if(moveCollision(clonedObject)){
+                updateStatusLabel("Room Overlapping!!");
+            }
+        });
+
+        right.addActionListener((ActionEvent e) -> {
+            positioning[1] = "R";
+            updateStatusLabel("");
+            repaint();
+            relativePlacement(positioning, staticObject, clonedObject);
+            if(moveCollision(clonedObject)){
+                updateStatusLabel("Room Overlapping!!");
+            }
         });
 
         selectMenu.add(rotateClockwise);
@@ -172,6 +176,15 @@ public class SketchPanel extends JPanel{
                     if (drawingTool.getCurrentObject() != null) {
                         copiedObject = (CanvasObject)drawingTool.getCurrentObject().clone();
                     }
+                }
+                if(relativePositionLock){
+                    staticObject = finishedObject;
+                    if(objectManager.getObjectAt(e.getX(), e.getY()) instanceof Room){
+                        clonedObject = (CanvasObject)objectManager.getObjectAt(e.getX(), e.getY()).clone();
+                        relativePositionLock = false;
+                        System.out.println("Clicked");
+                        alignmentMenu.show(e.getComponent(), e.getX(), e.getY());
+                    };
                 }
                 repaint();
             }
@@ -210,6 +223,8 @@ public class SketchPanel extends JPanel{
                     selectMenu.show(e.getComponent(),e.getX(), e.getY());
                 }
             }
+
+            
         });
 
         addMouseMotionListener(new MouseMotionAdapter() {
@@ -369,6 +384,55 @@ public class SketchPanel extends JPanel{
 
         }
 
+    }
+
+    private void relativePlacement(String[] arr, CanvasObject initial, CanvasObject movable){
+        if(arr[0].equals("N")){
+            if(arr[1].equals("L")){
+                movable.setBounds(initial.x,initial.y - movable.height, movable.width, movable.height);
+            }
+            if(arr[1].equals("R")){
+                movable.setBounds(initial.x + initial.width-movable.width, initial.y - movable.height, movable.width, movable.height);
+            }
+            if(arr[1].equals("C")){
+                movable.setBounds(initial.x + initial.width/2 -movable.width/2, initial.y - movable.height, movable.width, movable.height);
+            }
+        }
+        if (arr[0].equals("S")) {
+            if (arr[1].equals("L")) {
+                movable.setBounds(initial.x, initial.y + initial.height, movable.width, movable.height);
+            } else if (arr[1].equals("R")) {
+                movable.setBounds(initial.x + initial.width - movable.width, initial.y + initial.height, movable.width, movable.height);
+            } else if (arr[1].equals("C")) {
+                movable.setBounds(initial.x + initial.width / 2 - movable.width / 2, initial.y + initial.height, movable.width, movable.height);
+            }
+        }
+        
+        if (arr[0].equals("E")) {
+            if (arr[1].equals("L")) {
+                movable.setBounds(initial.x + initial.width, initial.y, movable.height, movable.width);
+            } else if (arr[1].equals("R")) {
+                movable.setBounds(initial.x + initial.width, initial.y + initial.height - movable.width, movable.height, movable.width);
+            } else if (arr[1].equals("C")) {
+                movable.setBounds(initial.x + initial.width, initial.y + initial.height/2 - movable.width/2, movable.height, movable.width);
+            }
+        }
+        
+        if (arr[0].equals("W")) {
+            if (arr[1].equals("L")) {
+                movable.setBounds(initial.x - movable.height, initial.y, movable.height, movable.width);
+            } else if (arr[1].equals("R")) {
+                movable.setBounds(initial.x - movable.height, initial.y + initial.height - movable.width, movable.height, movable.width);
+            } else if (arr[1].equals("C")) {
+                movable.setBounds(initial.x - movable.height, initial.y + initial.height/2 - movable.width/2, movable.height, movable.width);
+            }
+        }
+        if (!objectManager.getObjects().contains(movable)) {
+            objectManager.addObject(movable);
+        }
+        revalidate();
+        repaint();
+        
     }
 
     // find object at the given coordinates
