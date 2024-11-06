@@ -56,3 +56,5 @@ local.properties
 
 # OS-specific files
 .DS_Store
+bin/CanvasObjectManager.class
+bin/ToolPanel.class
