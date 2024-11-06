@@ -24,6 +24,5 @@ public class WindowTool extends DrawingTool {
     public void finishDrawing() {
         currentObject = null;
     }
-
     
 }

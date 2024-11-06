@@ -22,7 +22,24 @@ public class DoorTool extends DrawingTool {
 
     @Override
     public void finishDrawing() {
+        if (!borderCheck()) 
+            CanvasObjectManager.getInstance().removeObject(currentObject);
         currentObject = null;
+        
+    }
+
+    // bug: only checks for intersection of room in it area
+    //      doesn't check for anything else, goes out of bound of house region
+    private boolean borderCheck() {
+        int count = 0;
+        for (CanvasObject object: CanvasObjectManager.getInstance().getObjects()) {
+            if (currentObject.intersects(object)
+            && currentObject != object
+            && object instanceof Room) {
+                count += 1;
+            }
+        }
+        return count == 2;
     }
     
 }

@@ -35,7 +35,8 @@ public class CanvasObjectManager {
             if (object.intersects(newObject)
             && !(object instanceof Room && newObject instanceof Furniture && object.contains(newObject))
             && !(newObject instanceof Room && object instanceof Furniture && newObject.contains(object))
-            && !(newObject instanceof Door)) {
+            && !(newObject instanceof Door)
+            && !(newObject instanceof Window)) {
                 statusLabel.setText("Intersection ERROR!");
                 return;
             }
@@ -66,10 +67,15 @@ public class CanvasObjectManager {
         }
         // objects.add(newObject);
     }
-
+    
     public void removeObject(CanvasObject object) {
         objects.remove(object);
         statusLabel.setText("Object deleted");
+        for (int i = objects.size() - 1; i >= 0; i--) {
+            if(objects.get(i).layer == 0) layerIndex[0] = i;
+            if(objects.get(i).layer == 1) layerIndex[1] = i;
+            if(objects.get(i).layer == 2) layerIndex[2] = i;
+        }
     }
 
     public CanvasObject getObjectAt(int x, int y) {
