@@ -33,6 +33,7 @@ public class SketchPanel extends JPanel{
     String[] positioning = new String[2];
     private JLabel statusLabel;
     private boolean relativePositionLock = false;
+    private boolean roomSelected = false;
     public SketchPanel(DrawingTool DrawingTool) {
         this.drawingTool = DrawingTool;
         //this.statusLabel = statusLabel;
@@ -132,7 +133,9 @@ public class SketchPanel extends JPanel{
             positioning[1] = "L";
             updateStatusLabel("");
             repaint();
-            relativePlacement(positioning, staticObject, clonedObject);
+            if(relativePositionLock){
+                relativePlacement(positioning, staticObject, clonedObject);
+            }
             if(moveCollision(clonedObject)){
                 updateStatusLabel("Room Overlapping!");
             }
@@ -142,7 +145,9 @@ public class SketchPanel extends JPanel{
             positioning[1] = "C";
             updateStatusLabel("");
             repaint();
-            relativePlacement(positioning, staticObject, clonedObject);
+            if(relativePositionLock){
+                relativePlacement(positioning, staticObject, clonedObject);
+            }
             if(moveCollision(clonedObject)){
                 updateStatusLabel("Room Overlapping!!");
             }
@@ -152,7 +157,9 @@ public class SketchPanel extends JPanel{
             positioning[1] = "R";
             updateStatusLabel("");
             repaint();
-            relativePlacement(positioning, staticObject, clonedObject);
+            if(relativePositionLock){
+                relativePlacement(positioning, staticObject, clonedObject);
+            }
             if(moveCollision(clonedObject)){
                 updateStatusLabel("Room Overlapping!!");
             }
@@ -179,12 +186,15 @@ public class SketchPanel extends JPanel{
                 }
                 if(relativePositionLock){
                     staticObject = finishedObject;
-                    if(objectManager.getObjectAt(e.getX(), e.getY()) instanceof Room){
+                    if(objectManager.getObjectAt(e.getX(), e.getY()) instanceof Room){ 
                         clonedObject = (CanvasObject)objectManager.getObjectAt(e.getX(), e.getY()).clone();
-                        relativePositionLock = false;
                         System.out.println("Clicked");
                         alignmentMenu.show(e.getComponent(), e.getX(), e.getY());
-                    };
+                    }else{
+                        updateStatusLabel("The component selected is not a room. Select a room.");
+                        relativePositionLock = false;
+                    }
+                    
                 }
                 repaint();
             }
@@ -219,6 +229,14 @@ public class SketchPanel extends JPanel{
             }
 
             private void showPopup(MouseEvent e) {
+                if(!(finishedObject instanceof Room)){
+                    roomSelected = false;
+                    selectMenu.remove(addRoom);
+                }
+                if(!roomSelected & (finishedObject instanceof Room)){
+                    roomSelected = true;
+                    selectMenu.add(addRoom);
+                }
                 if (e.isPopupTrigger()) {
                     selectMenu.show(e.getComponent(),e.getX(), e.getY());
                 }
