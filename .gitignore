@@ -56,3 +56,9 @@ local.properties
 
 # OS-specific files
 .DS_Store
+bin/CanvasObjectManager.class
+bin/CanvasObjectManager.class
+bin/SelectTool.class
+bin/SketchApp.class
+bin/SketchPanel.class
+bin/ToolPanel.class
