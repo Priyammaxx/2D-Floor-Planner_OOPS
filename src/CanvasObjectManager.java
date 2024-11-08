@@ -70,7 +70,7 @@ public class CanvasObjectManager {
     
     public void removeObject(CanvasObject object) {
         objects.remove(object);
-        statusLabel.setText("Object deleted");
+        statusLabel.setText("OBJECT DELETED");
         for (int i = objects.size() - 1; i >= 0; i--) {
             if(objects.get(i).layer == 0) layerIndex[0] = i;
             if(objects.get(i).layer == 1) layerIndex[1] = i;
