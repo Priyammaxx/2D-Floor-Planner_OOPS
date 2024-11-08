@@ -10,11 +10,13 @@ public class RotationUtility {
         int pivotY = currentObject.y + currentObject.height / 2;
 
         for (CanvasObject object: objectManager.getObjects()) {
-            if (currentObject.contains(object)) {
+            if (isInsideOrOnBorder(currentObject, object)) { //changed function to add case of touching border
                 rotateObject(object, pivotX, pivotY, angle);
             }
         }
+
     }
+
 
     public static void rotateObject(CanvasObject object, int pivotX, int pivotY, int angle) {
         double objectCenterX = object.getX() + object.getWidth() / 2;
@@ -35,5 +37,32 @@ public class RotationUtility {
         object.width = object.height;
         object.height = temp;
 
+    }
+
+
+    //Function to check if furniture is inside room
+    private static boolean isInsideOrOnBorder(CanvasObject container, CanvasObject object) {
+        boolean fullyContained = (object.x >= container.x && object.x + object.width <= container.x + container.width) &&
+                                 (object.y >= container.y && object.y + object.height <= container.y + container.height);
+
+        boolean touchingInsideBorders = (object.x <= container.x + container.width && object.x + object.width >= container.x) &&
+                                         (object.y <= container.y + container.height && object.y + object.height >= container.y);
+
+
+        // This is not working because of MATH logic error
+        // boolean bothCases = (( object.x >= container.x && (object.x + object.width <= container.x + container.width))
+        //                     || (object.y >= container.y && (object.y + object.height <= container.y + container.height)) );
+
+        // return bothCases; 
+        if (fullyContained){
+            System.out.println("fully contained");
+        }                  
+        else {
+            if(touchingInsideBorders){
+             System.out.println("touching borders"); 
+            }
+            else System.out.println("outside probably or IDK WTH IS GOING ONN");
+        }
+        return fullyContained || touchingInsideBorders;
     }
 }
