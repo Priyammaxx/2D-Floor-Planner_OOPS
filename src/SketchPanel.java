@@ -389,28 +389,32 @@ public class SketchPanel extends JPanel{
     // }
     
     // Experimental code
-    private void redrawBuffer() {
-        Graphics2D g2d = canvas.createGraphics();
+    private void redrawBuffer(Graphics g) {
+        Graphics2D g2d = (Graphics2D) g;
+        Graphics2D canvasg2d = canvas.createGraphics();
         Graphics2D overlay = canvasOverlay.createGraphics();
 
-        Composite prevComposite = g2d.getComposite();
+        Composite prevComposite = canvasg2d.getComposite();
 
-        g2d.setComposite(AlphaComposite.Clear);
-        g2d.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
+        canvasg2d.setComposite(AlphaComposite.Clear);
+        canvasg2d.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
 
         overlay.setComposite(AlphaComposite.Clear);
         overlay.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
 
-        g2d.setComposite(prevComposite);
+        canvasg2d.setComposite(prevComposite);
         overlay.setComposite(prevComposite);
         
         if (gridEnabled) {
             // draw grid first then draw other things on top of it
+            drawLineGrid(canvasg2d);
             drawLineGrid(g2d);
             // Dot grid is commented
-            // drawDotGrid(g2d);
+            // drawDotGrid(canvasg2d);
         }
             
+        canvasg2d.setColor(Color.BLACK);
+        canvasg2d.setStroke(new BasicStroke(2)); // drawing rectangle stroke size
         g2d.setColor(Color.BLACK);
         g2d.setStroke(new BasicStroke(2)); // drawing rectangle stroke size
     
@@ -420,30 +424,32 @@ public class SketchPanel extends JPanel{
             if (object instanceof Door) {
                 paintOverBlack(object);
             } else {
+                object.draw(canvasg2d);
                 object.draw(g2d);
             }
         }
     
         if (drawingTool.getCurrentObject() != null) {
             drawingTool.getCurrentObject().draw(g2d);
+            drawingTool.getCurrentObject().draw(canvasg2d);
         }
 
-        g2d.dispose();
+        canvasg2d.dispose();
         overlay.dispose();
     }
 
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        redrawBuffer();
+        redrawBuffer(g);
 
-        g.drawImage(canvas, 0, 0, null);
+        // g.drawImage(canvas, 0, 0, null);
         g.drawImage(canvasOverlay, 0, 0, null);
     }
 
     private void paintOverBlack(CanvasObject object) {
-        for (int x = object.x; x < object.x + object.width; x++) {
-            for (int y = object.y; y < object.y + object.height; y++) {
+        for (int x = object.x + 1; x < object.x + object.width - 1; x++) {
+            for (int y = object.y + 1; y < object.y + object.height - 1; y++) {
                 int pixel = canvas.getRGB(x, y);
                 if (pixel == Color.black.getRGB()) {
                     canvasOverlay.setRGB(x, y, Color.white.getRGB());
