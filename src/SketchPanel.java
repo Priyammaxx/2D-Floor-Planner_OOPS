@@ -39,7 +39,7 @@ public class SketchPanel extends JPanel{
     public static BufferedImage canvas;
     public static BufferedImage canvasOverlay;
 
-    private final float[] dashPattern = {10, 10};
+    private final float[] dashPattern = {5, 5};
     private final Stroke dashedStroke = new BasicStroke(2, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10, dashPattern, 0);
     private final Stroke plainStroke = new BasicStroke(2);
 
@@ -70,6 +70,7 @@ public class SketchPanel extends JPanel{
         addRoom.add(south);
         addRoom.add(east);
         addRoom.add(west);
+
         // ------ Select Menu functionalities ------------
         rotateAntiClockwise.addActionListener((ActionEvent e) -> {
             // copiedObject = (CanvasObject)finishedObject.clone();
@@ -83,11 +84,11 @@ public class SketchPanel extends JPanel{
                 finishedObject.rotate();
                 RotationUtility.RotateWithContained(objectManager, finishedObject, -90);
             }
-            
-            // Some Problem with this!!
             repaint();
             // redrawBuffer();
+
         });
+
         rotateClockwise.addActionListener((ActionEvent e) -> {
             finishedObject.rotate();
             if (rotateCollision(finishedObject)) {
@@ -100,8 +101,6 @@ public class SketchPanel extends JPanel{
                 finishedObject.rotate();
                 RotationUtility.RotateWithContained(objectManager, finishedObject, 90);
             }
-
-            // Some Problem with this!!
             repaint();
             // redrawBuffer();
         });
@@ -238,12 +237,6 @@ public class SketchPanel extends JPanel{
                         objectManager.addObject(finishedObject);
                     }
                 }
-                // if (drawingTool instanceof SelectTool) {
-                    //     selectedObject = null;
-                    // } else {
-                        //     objects.add(drawingTool.getCurrentObject());
-                        //     drawingTool.finishDrawing();
-                        // }
                 drawingTool.finishDrawing();
                 repaint();
                 // redrawBuffer();
@@ -393,7 +386,7 @@ public class SketchPanel extends JPanel{
     //     }
     // }
     
-    // Experimental code
+    // --------Experimental code ----------
     private void redrawBuffer(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
         Graphics2D canvasg2d = canvas.createGraphics();
@@ -430,7 +423,9 @@ public class SketchPanel extends JPanel{
                 paintOverBlack(object, overlay);
             }
              else {
-                object.draw(canvasg2d);
+                if (object instanceof Room) {
+                    object.draw(canvasg2d);
+                }
                 object.draw(g2d);
             }
         }
@@ -450,7 +445,7 @@ public class SketchPanel extends JPanel{
         redrawBuffer(g);
 
         // g.drawImage(canvas, 0, 0, null);
-        g.drawImage(canvasOverlay, 0, 0, null);
+        g.drawImage(canvasOverlay, 0, 0, null); // draws windows and doors
     }
 
     private void paintOverBlack(CanvasObject object, Graphics2D overlay) {
@@ -486,7 +481,7 @@ public class SketchPanel extends JPanel{
                 }
             }
         }
-        
+
         if (object instanceof Door) {
             overlay.setStroke(plainStroke);
         } else {

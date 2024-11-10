@@ -22,7 +22,21 @@ public class WindowTool extends DrawingTool {
 
     @Override
     public void finishDrawing() {
+        if (!borderCheck() && currentObject != null) 
+            CanvasObjectManager.getInstance().removeObject(currentObject);
         currentObject = null;
+    }
+
+    private boolean borderCheck() {
+        int count = 0;
+        for (CanvasObject object : CanvasObjectManager.getInstance().getObjects()) {
+            if (currentObject.intersects(object)
+            && currentObject != object
+            && object instanceof Room) {
+                count += 1;
+            }
+        }
+        return count == 1;
     }
     
 }
