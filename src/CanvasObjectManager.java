@@ -43,20 +43,22 @@ public class CanvasObjectManager {
             else statusLabel.setText("Status: Ready");
         }
 
-        // switch case can be used here but should it be?
+        // switch case can be used here but should it be? 
         if (newObject.layer == 0) {
             // layer0 object at first index
             objects.add(0,newObject);
-        } else if (newObject.layer == 2) {
+        } 
+        else if (newObject.layer == 2) {
             // layer 2 object at last index
             objects.add(newObject);
-        } else {
-            if (layerIndex[2] != -1)
-                // if layer2 object present then insert at the position of first of its object
-                objects.add(layerIndex[2], newObject);
-            else
-                // layer2 object absent, add layer1 object at end
-                objects.add(newObject);
+            } 
+            else {
+                if (layerIndex[2] != -1)
+                    // if layer2 object present then insert at the position of first of its object
+                    objects.add(layerIndex[2], newObject);
+                else
+                    // layer2 object absent, add layer1 object at end
+                    objects.add(newObject);
         }
 
         for (int i = objects.size() - 1; i >= 0; i--) {
