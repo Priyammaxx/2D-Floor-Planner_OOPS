@@ -1,15 +1,16 @@
-import javax.swing.JMenu;
+import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
-import java.awt.Canvas;
 import java.awt.Color;
+import java.awt.Composite;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
-
+import java.awt.image.BufferedImage;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -34,6 +35,9 @@ public class SketchPanel extends JPanel{
     private JLabel statusLabel;
     private boolean relativePositionLock = false;
     private boolean roomSelected = false;
+    public static BufferedImage canvas;
+    public static BufferedImage canvasOverlay;
+
     public SketchPanel(DrawingTool DrawingTool) {
         this.drawingTool = DrawingTool;
         //this.statusLabel = statusLabel;
@@ -77,6 +81,7 @@ public class SketchPanel extends JPanel{
             
             // Some Problem with this!!
             repaint();
+            // redrawBuffer();
         });
         rotateClockwise.addActionListener((ActionEvent e) -> {
             finishedObject.rotate();
@@ -93,12 +98,14 @@ public class SketchPanel extends JPanel{
 
             // Some Problem with this!!
             repaint();
+            // redrawBuffer();
         });
 
         delete.addActionListener((ActionEvent e) -> {
             objectManager.removeObject(finishedObject);
             CanvasObjectManager.getInstance().removeObject(finishedObject);
             repaint();
+            // redrawBuffer();
         });
 
         north.addActionListener((ActionEvent e) -> {
@@ -106,6 +113,7 @@ public class SketchPanel extends JPanel{
             updateStatusLabel("Select a Room.");
             relativePositionLock = true;
             repaint();
+            // redrawBuffer();
         });
 
         south.addActionListener((ActionEvent e) -> {
@@ -113,6 +121,7 @@ public class SketchPanel extends JPanel{
             updateStatusLabel("Select a Room.");
             relativePositionLock = true;
             repaint();
+            // redrawBuffer();
         });
 
         east.addActionListener((ActionEvent e) -> {
@@ -120,6 +129,7 @@ public class SketchPanel extends JPanel{
             updateStatusLabel("Select a Room.");
             relativePositionLock = true;
             repaint();
+            // redrawBuffer();
         });
 
         west.addActionListener((ActionEvent e) -> {
@@ -127,12 +137,14 @@ public class SketchPanel extends JPanel{
             updateStatusLabel("Select a Room.");
             relativePositionLock = true;
             repaint();
+            // redrawBuffer();
         });
 
         left.addActionListener((ActionEvent e) -> {
             positioning[1] = "L";
             updateStatusLabel("");
             repaint();
+            // redrawBuffer();
             if(relativePositionLock){
                 relativePlacement(positioning, staticObject, clonedObject);
             }
@@ -145,6 +157,7 @@ public class SketchPanel extends JPanel{
             positioning[1] = "C";
             updateStatusLabel("");
             repaint();
+            // redrawBuffer();
             if(relativePositionLock){
                 relativePlacement(positioning, staticObject, clonedObject);
             }
@@ -157,6 +170,7 @@ public class SketchPanel extends JPanel{
             positioning[1] = "R";
             updateStatusLabel("");
             repaint();
+            // redrawBuffer();
             if(relativePositionLock){
                 relativePlacement(positioning, staticObject, clonedObject);
             }
@@ -197,6 +211,7 @@ public class SketchPanel extends JPanel{
                     
                 }
                 repaint();
+                // redrawBuffer();
             }
 
             @Override
@@ -226,6 +241,7 @@ public class SketchPanel extends JPanel{
                         // }
                 drawingTool.finishDrawing();
                 repaint();
+                // redrawBuffer();
             }
 
             private void showPopup(MouseEvent e) {
@@ -251,8 +267,14 @@ public class SketchPanel extends JPanel{
             public void mouseDragged(MouseEvent e) {
                 drawingTool.continueDrawing(snapToGrid(e.getX()), snapToGrid(e.getY()));
                 repaint();
+                // redrawBuffer();
             }
         });
+
+        // ------ NEW CODE ---------
+        // for later, set dynamic width and height
+        canvas = new BufferedImage(800, 600, BufferedImage.TYPE_INT_ARGB);
+        canvasOverlay = new BufferedImage(800, 600, BufferedImage.TYPE_INT_ARGB);
     }
 
     //We got the status label to put in collision and rotation detection
@@ -337,15 +359,51 @@ public class SketchPanel extends JPanel{
     public void setGridEnabled(boolean enabled) {
         gridEnabled = enabled;
         repaint();
+        // redrawBuffer();
     }
 
     // ------------- Draw Methods ---------------
-    
-    @Override
-    protected void paintComponent(Graphics g) {
-        super.paintComponent(g); // don't know how it works, why it works
-        Graphics2D g2d = (Graphics2D) g;
+    // @Override
+    // protected void paintComponent(Graphics g) {
+    //     super.paintComponent(g); // don't know how it works, why it works
+    //     Graphics2D g2d = (Graphics2D) g;
 
+    //     if (gridEnabled) {
+    //         // draw grid first then draw other things on top of it
+    //         drawLineGrid(g2d);
+    //         // Dot grid is commented
+    //         // drawDotGrid(g2d);
+    //     }
+            
+    //     g2d.setColor(Color.BLACK);
+    //     g2d.setStroke(new BasicStroke(2)); // drawing rectangle stroke size
+
+    //     // draw all those rectangles
+    //     for (CanvasObject object: objectManager.getObjects()) {
+    //         object.draw(g2d);
+    //     }
+
+    //     if (drawingTool.getCurrentObject() != null) {
+    //         drawingTool.getCurrentObject().draw(g2d);
+    //     }
+    // }
+    
+    // Experimental code
+    private void redrawBuffer() {
+        Graphics2D g2d = canvas.createGraphics();
+        Graphics2D overlay = canvasOverlay.createGraphics();
+
+        Composite prevComposite = g2d.getComposite();
+
+        g2d.setComposite(AlphaComposite.Clear);
+        g2d.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
+
+        overlay.setComposite(AlphaComposite.Clear);
+        overlay.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
+
+        g2d.setComposite(prevComposite);
+        overlay.setComposite(prevComposite);
+        
         if (gridEnabled) {
             // draw grid first then draw other things on top of it
             drawLineGrid(g2d);
@@ -353,31 +411,48 @@ public class SketchPanel extends JPanel{
             // drawDotGrid(g2d);
         }
             
-
         g2d.setColor(Color.BLACK);
         g2d.setStroke(new BasicStroke(2)); // drawing rectangle stroke size
+    
 
-        // get all rectangles stored rectManger and loop through
         // draw all those rectangles
         for (CanvasObject object: objectManager.getObjects()) {
-            object.draw(g2d);
+            if (object instanceof Door) {
+                paintOverBlack(object);
+            } else {
+                object.draw(g2d);
+            }
         }
-
-        // draw current rectangle as the user drawgs the mouse
-        // if (drawingTool.getCurrentRect() != null) {
-        //     // don't know how this works
-        //     // why does repaint need to be called again when this does its work??
-        //     g2d.draw(drawingTool.getCurrentRect());
-        // }
-
-        // if (selectedObject != null) {
-        //     g2d.setColor(Color.RED); // highlight in red
-        //     g2d.draw(selectedObject.getBoundingBox());
-        // }
+    
         if (drawingTool.getCurrentObject() != null) {
             drawingTool.getCurrentObject().draw(g2d);
         }
+
+        g2d.dispose();
+        overlay.dispose();
     }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        redrawBuffer();
+
+        g.drawImage(canvas, 0, 0, null);
+        g.drawImage(canvasOverlay, 0, 0, null);
+    }
+
+    private void paintOverBlack(CanvasObject object) {
+        for (int x = object.x; x < object.x + object.width; x++) {
+            for (int y = object.y; y < object.y + object.height; y++) {
+                int pixel = canvas.getRGB(x, y);
+                if (pixel == Color.black.getRGB()) {
+                    canvasOverlay.setRGB(x, y, Color.white.getRGB());
+                }
+            }
+        }
+    }
+    
+    // --------- Experimental Code Ends here --------------
 
     // method for fixed grid
     private void drawLineGrid(Graphics2D g2d) {
@@ -450,6 +525,7 @@ public class SketchPanel extends JPanel{
         }
         revalidate();
         repaint();
+        // redrawBuffer();
         
     }
 

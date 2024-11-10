@@ -4,7 +4,7 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 
 public class Door extends CanvasObject {
-    
+
     public Door(int x, int y, int width, int height) {
         this.x = x;
         this.y = y;
@@ -15,23 +15,8 @@ public class Door extends CanvasObject {
 
     @Override
     void draw(Graphics2D g2d) {
-        // below code is directly copied from ChatGPT, may need changes
-
-         // Save the original composite setting to restore later
-        // Composite originalComposite = g2d.getComposite();
-
-        // Step 1: Clear all content within the feature rectangle area
-        // g2d.setComposite(AlphaComposite.Clear); // Set to clear mode
-        g2d.setColor(new Color(255,255,255,150));
-        g2d.fill(this); // Clear the specified area
-
-        // // Step 2: Restore the composite to normal and draw a faint border around the feature rectangle
-        // g2d.setComposite(AlphaComposite.SrcOver);
-        // // g2d.setColor(new Color(0, 0, 0, 64)); // Semi-transparent border color
-        // g2d.draw(this); // Draw the border
-
-        // // Restore the original composite for any further drawing
-        // g2d.setComposite(originalComposite);
+        g2d.setColor(new Color(173,216,230));
+        g2d.draw(this);;
     }
 
     @Override
