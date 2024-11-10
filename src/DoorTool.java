@@ -22,7 +22,7 @@ public class DoorTool extends DrawingTool {
 
     @Override
     public void finishDrawing() {
-        if (!borderCheck()) 
+        if (!borderCheck() && currentObject != null) 
             CanvasObjectManager.getInstance().removeObject(currentObject);
         currentObject = null;
         
@@ -32,14 +32,17 @@ public class DoorTool extends DrawingTool {
     //      doesn't check for anything else, goes out of bound of house region
     private boolean borderCheck() {
         int count = 0;
+        Room lastIntersected = null;
         for (CanvasObject object: CanvasObjectManager.getInstance().getObjects()) {
             if (currentObject.intersects(object)
             && currentObject != object
             && object instanceof Room) {
+                lastIntersected = (Room)object;
                 count += 1;
             }
         }
-        return count == 2;
+        if (count == 0) return false;
+        return (count == 2 || (count == 1 && (lastIntersected.getColor().getGreen() != 255 && lastIntersected.getColor().getBlue() != 255)) );
     }
     
 }

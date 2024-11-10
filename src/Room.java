@@ -45,5 +45,9 @@ public class Room extends CanvasObject{
         this.y += deltaY;
     }
 
+    public Color getColor() {
+        // return (new Color(this.color.getRed(),this.color.getGreen(),this.color.getBlue()));
+        return this.color;
+    }
 
 }

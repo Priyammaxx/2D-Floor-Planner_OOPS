@@ -18,3 +18,14 @@ The workspace contains two folders by default, where:
 - `lib`: the folder to maintain dependencies
 
 Run SketchApp.java to run program. Meanwhile, the compiled output files will be generated in the `bin` folder by default.
+
+---
+
+## Resources
+
+PNG images for furniture and various other small icons were downloaded from <a href="https://www.flaticon.com/" title="sink icons">Freepik - Flaticon</a>:
+
+- <a href="https://www.flaticon.com/free-icons/sink" title="sink icons">Sink icons created by Freepik - Flaticon</a>
+- <a href="https://www.flaticon.com/free-icons/toilet" title="toilet icons">Toilet icons created by Freepik - Flaticon</a>
+- <a href="https://www.flaticon.com/free-icons/bathroom" title="bathroom icons">Bathroom icons created by Freepik - Flaticon</a>
+- <a href="https://www.flaticon.com/free-icons/hob" title="hob icons">Hob icons created by Smashicons - Flaticon</a>

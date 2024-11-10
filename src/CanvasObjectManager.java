@@ -16,7 +16,7 @@ public class CanvasObjectManager {
         objects = new ArrayList<>();
     }
 
-    public void getLabel( JLabel statusLabel){
+    public void getLabel(JLabel statusLabel){
         this.statusLabel = statusLabel;
     }
 
@@ -31,32 +31,35 @@ public class CanvasObjectManager {
         if (newObject.width == 0 || newObject.height == 0) {
             return;
         }
-        for (CanvasObject object : objects) {
-            if (object.intersects(newObject)
-            && !(object instanceof Room && newObject instanceof Furniture && object.contains(newObject))
-            && !(newObject instanceof Room && object instanceof Furniture && newObject.contains(object))
-            && !(newObject instanceof Door)
-            && !(newObject instanceof Window)) {
-                statusLabel.setText("Intersection ERROR!");
-                return;
+        if (!(newObject instanceof Door || newObject instanceof Window)) {
+            for (CanvasObject object : objects) {
+                if (object.intersects(newObject)
+                && !(object instanceof Room && newObject instanceof Furniture && object.contains(newObject))
+                && !(newObject instanceof Room && object instanceof Furniture && newObject.contains(object))) {
+                    statusLabel.setText("Intersection ERROR!");
+                    return;
+                }
+                else statusLabel.setText("Status: Ready");
             }
-            else statusLabel.setText("Status: Ready");
+
         }
 
-        // switch case can be used here but should it be?
+        // switch case can be used here but should it be? 
         if (newObject.layer == 0) {
             // layer0 object at first index
             objects.add(0,newObject);
-        } else if (newObject.layer == 2) {
+        } 
+        else if (newObject.layer == 2) {
             // layer 2 object at last index
             objects.add(newObject);
-        } else {
-            if (layerIndex[2] != -1)
-                // if layer2 object present then insert at the position of first of its object
-                objects.add(layerIndex[2], newObject);
-            else
-                // layer2 object absent, add layer1 object at end
-                objects.add(newObject);
+            } 
+            else {
+                if (layerIndex[2] != -1)
+                    // if layer2 object present then insert at the position of first of its object
+                    objects.add(layerIndex[2], newObject);
+                else
+                    // layer2 object absent, add layer1 object at end
+                    objects.add(newObject);
         }
 
         for (int i = objects.size() - 1; i >= 0; i--) {
@@ -70,7 +73,7 @@ public class CanvasObjectManager {
     
     public void removeObject(CanvasObject object) {
         objects.remove(object);
-        statusLabel.setText("Object deleted");
+        statusLabel.setText("OBJECT DELETED");
         for (int i = objects.size() - 1; i >= 0; i--) {
             if(objects.get(i).layer == 0) layerIndex[0] = i;
             if(objects.get(i).layer == 1) layerIndex[1] = i;

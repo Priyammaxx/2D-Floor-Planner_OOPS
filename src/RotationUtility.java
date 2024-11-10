@@ -10,11 +10,13 @@ public class RotationUtility {
         int pivotY = currentObject.y + currentObject.height / 2;
 
         for (CanvasObject object: objectManager.getObjects()) {
-            if (currentObject.contains(object)) {
+            if (object != currentObject && currentObject.contains(object)){
                 rotateObject(object, pivotX, pivotY, angle);
             }
         }
+        rotateObject(currentObject, pivotX, pivotY, angle);
     }
+
 
     public static void rotateObject(CanvasObject object, int pivotX, int pivotY, int angle) {
         double objectCenterX = object.getX() + object.getWidth() / 2;
@@ -36,4 +38,5 @@ public class RotationUtility {
         object.height = temp;
 
     }
+    
 }

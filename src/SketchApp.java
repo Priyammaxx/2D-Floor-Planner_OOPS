@@ -21,6 +21,7 @@ public class SketchApp extends JFrame{
     boolean snapEnabled = true;
     boolean gridEnabled = true;
     private JLabel statusLabel;
+    private FurnitureLoader furnitureLoader = FurnitureLoader.getInstance();
 
     public SketchApp() {
         setTitle("2D Floor Planner");
