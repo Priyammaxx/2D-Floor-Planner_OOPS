@@ -1,3 +1,5 @@
+
+
 public class DoorTool extends DrawingTool {
 
     private int startX;
