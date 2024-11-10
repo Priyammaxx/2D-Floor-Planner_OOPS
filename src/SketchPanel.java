@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Composite;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Stroke;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -37,6 +38,10 @@ public class SketchPanel extends JPanel{
     private boolean roomSelected = false;
     public static BufferedImage canvas;
     public static BufferedImage canvasOverlay;
+
+    private final float[] dashPattern = {10, 10};
+    private final Stroke dashedStroke = new BasicStroke(2, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10, dashPattern, 0);
+    private final Stroke plainStroke = new BasicStroke(2);
 
     public SketchPanel(DrawingTool DrawingTool) {
         this.drawingTool = DrawingTool;
@@ -421,9 +426,10 @@ public class SketchPanel extends JPanel{
 
         // draw all those rectangles
         for (CanvasObject object: objectManager.getObjects()) {
-            if (object instanceof Door) {
-                paintOverBlack(object);
-            } else {
+            if (object instanceof Door || object instanceof Window) {
+                paintOverBlack(object, overlay);
+            }
+             else {
                 object.draw(canvasg2d);
                 object.draw(g2d);
             }
@@ -447,15 +453,47 @@ public class SketchPanel extends JPanel{
         g.drawImage(canvasOverlay, 0, 0, null);
     }
 
-    private void paintOverBlack(CanvasObject object) {
+    private void paintOverBlack(CanvasObject object, Graphics2D overlay) {
+        int minX = -1;
+        int maxX = -1;
+        int minY = -1;
+        int maxY = -1;
+        // for (int x = object.x + 1; x < object.x + object.width - 1; x++) {
+        //     for (int y = object.y + 1; y < object.y + object.height - 1; y++) {
+        //         int pixel = canvas.getRGB(x, y);
+        //         if (pixel == Color.black.getRGB()) {
+        //             canvasOverlay.setRGB(x, y, Color.white.getRGB());
+        //         }
+        //     }
+        // }
         for (int x = object.x + 1; x < object.x + object.width - 1; x++) {
+            int pixel = canvas.getRGB(x, object.y + 1);
+            if (pixel == Color.black.getRGB()) {
+                minX = maxX = x + 1;
+                minY = object.y + 1;
+                maxY = object.y + object.height - 1;
+                break;
+            }
+        }
+        if (minX == -1) {
             for (int y = object.y + 1; y < object.y + object.height - 1; y++) {
-                int pixel = canvas.getRGB(x, y);
+                int pixel = canvas.getRGB(object.x + 1, y);
                 if (pixel == Color.black.getRGB()) {
-                    canvasOverlay.setRGB(x, y, Color.white.getRGB());
+                    minX = object.x + 1;
+                    maxX = object.x + object.width - 1;
+                    minY = maxY = y + 1;
+                    break;
                 }
             }
         }
+        
+        if (object instanceof Door) {
+            overlay.setStroke(plainStroke);
+        } else {
+            overlay.setStroke(dashedStroke);
+        }
+        
+        overlay.drawLine(minX, minY, maxX, maxY);
     }
     
     // --------- Experimental Code Ends here --------------
