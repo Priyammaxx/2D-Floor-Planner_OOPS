@@ -16,7 +16,7 @@ public class CanvasObjectManager {
         objects = new ArrayList<>();
     }
 
-    public void getLabel( JLabel statusLabel){
+    public void getLabel(JLabel statusLabel){
         this.statusLabel = statusLabel;
     }
 
@@ -31,16 +31,17 @@ public class CanvasObjectManager {
         if (newObject.width == 0 || newObject.height == 0) {
             return;
         }
-        for (CanvasObject object : objects) {
-            if (object.intersects(newObject)
-            && !(object instanceof Room && newObject instanceof Furniture && object.contains(newObject))
-            && !(newObject instanceof Room && object instanceof Furniture && newObject.contains(object))
-            && !(newObject instanceof Door)
-            && !(newObject instanceof Window)) {
-                statusLabel.setText("Intersection ERROR!");
-                return;
+        if (!(newObject instanceof Door || newObject instanceof Window)) {
+            for (CanvasObject object : objects) {
+                if (object.intersects(newObject)
+                && !(object instanceof Room && newObject instanceof Furniture && object.contains(newObject))
+                && !(newObject instanceof Room && object instanceof Furniture && newObject.contains(object))) {
+                    statusLabel.setText("Intersection ERROR!");
+                    return;
+                }
+                else statusLabel.setText("Status: Ready");
             }
-            else statusLabel.setText("Status: Ready");
+
         }
 
         // switch case can be used here but should it be? 

@@ -4,7 +4,7 @@ public class RoomTool extends DrawingTool {
 
     private int startX;
     private int startY;
-    private Color color = Color.green; // set as room by default
+    private Color color = Color.green; // set as default
 
     @Override
     public void startDrawing(int x, int y) {

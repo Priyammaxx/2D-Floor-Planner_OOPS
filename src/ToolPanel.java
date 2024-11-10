@@ -11,9 +11,14 @@ public class ToolPanel extends JPanel {
     private JPanel mainToolPanel; // holds room, furniture, door, window
     private JPanel optionsPanel; // holds extra options for above selected
     private CardLayout cardLayout;
+    private FurnitureLoader furnitureLoader;
 
     public ToolPanel(SketchApp app) {
         this.app = app;
+
+        // this is experimental, fix later !!
+        furnitureLoader = FurnitureLoader.getInstance();
+        
         setLayout(new BorderLayout());
 
         mainToolPanel = new JPanel(new GridLayout(0,1)); // single column
@@ -65,6 +70,7 @@ public class ToolPanel extends JPanel {
         JButton drawingRoomButton = new JButton("Drawing Room"); // yellow or orange
         
         // color functionality to different types of rooms
+        // how does this if statement work
         bedRoomButton.addActionListener(e -> {
             if (app.getDrawingTool() instanceof RoomTool roomTool) {
                     roomTool.setColor(Color.green);
@@ -85,6 +91,8 @@ public class ToolPanel extends JPanel {
                     roomTool.setColor(Color.orange);
             }
         });
+
+        // room button colors
         bedRoomButton.setBackground(Color.green);
         bathRoomButton.setBackground(Color.blue);
 
@@ -93,19 +101,49 @@ public class ToolPanel extends JPanel {
         roomOptionsPanel.add(kitchenRoomButton);
         roomOptionsPanel.add(drawingRoomButton);
         
-        // Furniture
-        JPanel furniturOptionsPanel = new JPanel(new GridLayout(0,1));
-        JButton type1 = new JButton("type 1");
-        JButton type2 = new JButton("type 2");
-        JButton type3 = new JButton("type 3");
+        // ------ Furniture ----------
+        JPanel furnitureOptionsPanel = new JPanel(new GridLayout(0,1));
+        JButton kitchenSinkButton = new JButton("Kitchen Sink");
+        JButton showerButton = new JButton("Shower");
+        JButton stoveButton = new JButton("Stove");
+        JButton toiletButton = new JButton("Toilet");
+        JButton washbasinButton = new JButton("Washbasin");
+
+        kitchenSinkButton.addActionListener(e -> {
+            if (app.getDrawingTool() instanceof FurnitureTool furnitureTool) {
+                furnitureTool.setImage(furnitureLoader.getKitchenSink());
+            }
+        });
+        showerButton.addActionListener(e -> {
+            if (app.getDrawingTool() instanceof FurnitureTool furnitureTool) {
+                furnitureTool.setImage(furnitureLoader.getShower());
+            }
+        });
+        stoveButton.addActionListener(e -> {
+            if (app.getDrawingTool() instanceof FurnitureTool furnitureTool) {
+                furnitureTool.setImage(furnitureLoader.getStove());
+            }
+        });
+        toiletButton.addActionListener(e -> {
+            if (app.getDrawingTool() instanceof FurnitureTool furnitureTool) {
+                furnitureTool.setImage(furnitureLoader.getToilet());
+            }
+        });
+        washbasinButton.addActionListener(e -> {
+            if (app.getDrawingTool() instanceof FurnitureTool furnitureTool) {
+                furnitureTool.setImage(furnitureLoader.getWashbasin());
+            }
+        });
         
-        furniturOptionsPanel.add(type1);
-        furniturOptionsPanel.add(type2);
-        furniturOptionsPanel.add(type3);
+        furnitureOptionsPanel.add(kitchenSinkButton);
+        furnitureOptionsPanel.add(showerButton);
+        furnitureOptionsPanel.add(stoveButton);
+        furnitureOptionsPanel.add(toiletButton);
+        furnitureOptionsPanel.add(washbasinButton);
         
         // adding to options panel
         optionsPanel.add(roomOptionsPanel, "Rooms");
-        optionsPanel.add(furniturOptionsPanel, "Furniture");
+        optionsPanel.add(furnitureOptionsPanel, "Furniture");
         
         // add main tool panel and options panel to Tool Panel
         add(mainToolPanel, BorderLayout.WEST);
