@@ -31,13 +31,16 @@ public class SketchPanel extends JPanel{
     private int offsetX, offsetY; // offset when dragging an object
     private JPopupMenu selectMenu;
     private JPopupMenu alignmentMenu;
+    private JPopupMenu directionMenu;
     CanvasObject finishedObject;
     CanvasObject copiedObject;
     CanvasObject clonedObject;
     CanvasObject staticObject;
+    CanvasObject selectedObject;
     String[] positioning = new String[2];
     private JLabel statusLabel;
     private boolean relativePositionLock = false;
+    private boolean relativeAlignmentLock = false;
     private boolean roomSelected = false;
     public static BufferedImage canvas = null;
     public static BufferedImage canvasOverlay = null;
@@ -53,6 +56,7 @@ public class SketchPanel extends JPanel{
         // --------- Select Menu implementation ----------
         selectMenu = new JPopupMenu();
         alignmentMenu = new JPopupMenu();
+        directionMenu = new JPopupMenu();
         JMenuItem left = new JMenuItem("Left"); 
         JMenuItem center = new JMenuItem("Center"); 
         JMenuItem right = new JMenuItem("Right"); 
@@ -65,14 +69,24 @@ public class SketchPanel extends JPanel{
         JMenuItem rotateClockwise = new JMenuItem("Rotate Clockwise");
         JMenuItem delete = new JMenuItem("Delete");
         JMenu addRoom = new JMenu("Add a Room");
+        JMenuItem align = new JMenuItem("Align");
         JMenuItem north = new JMenuItem("North");
         JMenuItem south = new JMenuItem("South");
         JMenuItem east = new JMenuItem("East");
         JMenuItem west = new JMenuItem("West");
+        JMenuItem north1 = new JMenuItem("North");
+        JMenuItem south1 = new JMenuItem("South");
+        JMenuItem east1 = new JMenuItem("East");
+        JMenuItem west1 = new JMenuItem("West");
         addRoom.add(north); 
         addRoom.add(south);
         addRoom.add(east);
         addRoom.add(west);
+
+        directionMenu.add(north1); 
+        directionMenu.add(south1);
+        directionMenu.add(east1);
+        directionMenu.add(west1);
 
         // ------ Select Menu functionalities ------------
         rotateAntiClockwise.addActionListener((ActionEvent e) -> {
@@ -108,6 +122,12 @@ public class SketchPanel extends JPanel{
             // redrawBuffer();
         });
 
+        align.addActionListener((ActionEvent e) -> {
+            updateStatusLabel("Select a Room to align with.");
+            relativeAlignmentLock = true;
+            repaint();
+        });
+
         delete.addActionListener((ActionEvent e) -> {
             objectManager.removeObject(finishedObject);
             CanvasObjectManager.getInstance().removeObject(finishedObject);
@@ -123,18 +143,37 @@ public class SketchPanel extends JPanel{
             // redrawBuffer();
         });
 
-        south.addActionListener((ActionEvent e) -> {
-            positioning[0] = "S";
-            updateStatusLabel("Select a Room.");
-            relativePositionLock = true;
+        north1.addActionListener((ActionEvent e) -> {
+            positioning[0] = "N";
+            alignmentMenu.show(this, selectedObject.x + selectedObject.width/2, selectedObject.y + selectedObject.height/2);
             repaint();
             // redrawBuffer();
+        });
+
+        south.addActionListener((ActionEvent e) -> {
+            positioning[0] = "S";
+            repaint();
+            // redrawBuffer();
+        });
+
+        south1.addActionListener((ActionEvent e) -> {
+            positioning[0] = "S";
+            alignmentMenu.show(this, selectedObject.x + selectedObject.width/2, selectedObject.y + selectedObject.height/2);
+            repaint();
+            // redrawBuffer(); 
         });
 
         east.addActionListener((ActionEvent e) -> {
             positioning[0] = "E";
             updateStatusLabel("Select a Room.");
             relativePositionLock = true;
+            repaint();
+            // redrawBuffer();
+        });
+
+        east1.addActionListener((ActionEvent e) -> {
+            positioning[0] = "E";
+            alignmentMenu.show(this, selectedObject.x + selectedObject.width/2, selectedObject.y + selectedObject.height/2);
             repaint();
             // redrawBuffer();
         });
@@ -147,6 +186,13 @@ public class SketchPanel extends JPanel{
             // redrawBuffer();
         });
 
+        west1.addActionListener((ActionEvent e) -> {
+            positioning[0] = "W";
+            alignmentMenu.show(this, selectedObject.x + selectedObject.width/2, selectedObject.y + selectedObject.height/2);
+            repaint();
+            // redrawBuffer();
+        });
+
         left.addActionListener((ActionEvent e) -> {
             positioning[1] = "L";
             updateStatusLabel("");
@@ -154,6 +200,11 @@ public class SketchPanel extends JPanel{
             // redrawBuffer();
             if(relativePositionLock){
                 relativePlacement(positioning, staticObject, clonedObject);
+                relativePositionLock = false;
+            }
+            if(relativeAlignmentLock){
+                relativeAlignment(positioning, selectedObject, staticObject);
+                relativeAlignmentLock = false;
             }
             if(moveCollision(clonedObject)){
                 updateStatusLabel("Room Overlapping!");
@@ -167,6 +218,11 @@ public class SketchPanel extends JPanel{
             // redrawBuffer();
             if(relativePositionLock){
                 relativePlacement(positioning, staticObject, clonedObject);
+                relativePositionLock = false;
+            }
+            if(relativeAlignmentLock){
+                relativeAlignment(positioning, selectedObject, staticObject);
+                relativeAlignmentLock = false;
             }
             if(moveCollision(clonedObject)){
                 updateStatusLabel("Room Overlapping!!");
@@ -180,6 +236,11 @@ public class SketchPanel extends JPanel{
             // redrawBuffer();
             if(relativePositionLock){
                 relativePlacement(positioning, staticObject, clonedObject);
+                relativePositionLock = false;
+            }
+            if(relativeAlignmentLock){
+                relativeAlignment(positioning, selectedObject, staticObject);
+                relativeAlignmentLock = false;
             }
             if(moveCollision(clonedObject)){
                 updateStatusLabel("Room Overlapping!!");
@@ -209,11 +270,24 @@ public class SketchPanel extends JPanel{
                     staticObject = finishedObject;
                     if(objectManager.getObjectAt(e.getX(), e.getY()) instanceof Room){ 
                         clonedObject = (CanvasObject)objectManager.getObjectAt(e.getX(), e.getY()).clone();
-                        System.out.println("Clicked");
+                        System.out.println("Clicked"); // This is a debug line
                         alignmentMenu.show(e.getComponent(), e.getX(), e.getY());
                     }else{
                         updateStatusLabel("The component selected is not a room. Select a room.");
                         relativePositionLock = false;
+                    }
+                    
+                }
+                if(relativeAlignmentLock){
+                    staticObject = finishedObject;
+                    if(objectManager.getObjectAt(e.getX(), e.getY()) instanceof Room){ 
+                        selectedObject = (CanvasObject)objectManager.getObjectAt(e.getX(), e.getY());
+                        System.out.println("Clicked"); // This is a debug line
+                        directionMenu.show(e.getComponent(), e.getX(), e.getY());
+                        //alignmentMenu.show(e.getComponent(), e.getX(), e.getY());
+                    }else{
+                        updateStatusLabel("The component selected is not a room. Select a room.");
+                        relativeAlignmentLock = false;
                     }
                     
                 }
@@ -253,10 +327,12 @@ public class SketchPanel extends JPanel{
                 if(!(finishedObject instanceof Room)){
                     roomSelected = false;
                     selectMenu.remove(addRoom);
+                    selectMenu.remove(align);
                 }
                 if(!roomSelected & (finishedObject instanceof Room)){
                     roomSelected = true;
                     selectMenu.add(addRoom);
+                    selectMenu.add(align);
                 }
                 if (e.isPopupTrigger()) {
                     selectMenu.show(e.getComponent(),e.getX(), e.getY());
@@ -608,4 +684,51 @@ public class SketchPanel extends JPanel{
         
     }
 
+    private void relativeAlignment(String[] arr, CanvasObject initial, CanvasObject movable){
+        if(arr[0].equals("N")){
+            if(arr[1].equals("L")){
+                movable.setBounds(initial.x,initial.y - movable.height, movable.width, movable.height);
+            }
+            if(arr[1].equals("R")){
+                movable.setBounds(initial.x + initial.width-movable.width, initial.y - movable.height, movable.width, movable.height);
+            }
+            if(arr[1].equals("C")){
+                movable.setBounds(initial.x + initial.width/2 -movable.width/2, initial.y - movable.height, movable.width, movable.height);
+            }
+        }
+        if (arr[0].equals("S")) {
+            if (arr[1].equals("L")) {
+                movable.setBounds(initial.x, initial.y + initial.height, movable.width, movable.height);
+            } else if (arr[1].equals("R")) {
+                movable.setBounds(initial.x + initial.width - movable.width, initial.y + initial.height, movable.width, movable.height);
+            } else if (arr[1].equals("C")) {
+                movable.setBounds(initial.x + initial.width / 2 - movable.width / 2, initial.y + initial.height, movable.width, movable.height);
+            }
+        }
+        
+        if (arr[0].equals("E")) {
+            if (arr[1].equals("L")) {
+                movable.setBounds(initial.x + initial.width, initial.y, movable.height, movable.width);
+            } else if (arr[1].equals("R")) {
+                movable.setBounds(initial.x + initial.width, initial.y + initial.height - movable.width, movable.height, movable.width);
+            } else if (arr[1].equals("C")) {
+                movable.setBounds(initial.x + initial.width, initial.y + initial.height/2 - movable.width/2, movable.height, movable.width);
+            }
+        }
+        
+        if (arr[0].equals("W")) {
+            if (arr[1].equals("L")) {
+                movable.setBounds(initial.x - movable.height, initial.y, movable.height, movable.width);
+            } else if (arr[1].equals("R")) {
+                movable.setBounds(initial.x - movable.height, initial.y + initial.height - movable.width, movable.height, movable.width);
+            } else if (arr[1].equals("C")) {
+                movable.setBounds(initial.x - movable.height, initial.y + initial.height/2 - movable.width/2, movable.height, movable.width);
+            }
+        }
+        
+        // redrawBuffer();
+        
+    }
+
+    
 }

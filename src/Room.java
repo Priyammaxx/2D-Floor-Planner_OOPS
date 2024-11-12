@@ -56,7 +56,5 @@ public class Room extends CanvasObject{
 
     // extra function, may delete later
     // if deleted: make alpha public, make changes in CanvasOjbectTypeAdapter
-    public float getAlpha() {
-        return this.alpha;
-    }
+    
 }
