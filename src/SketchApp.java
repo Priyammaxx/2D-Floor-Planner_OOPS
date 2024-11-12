@@ -2,6 +2,7 @@
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
+import java.awt.Toolkit;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -25,7 +26,11 @@ public class SketchApp extends JFrame{
 
     public SketchApp() {
         setTitle("2D Floor Planner");
-        setSize(800, 600);
+        // setSize(800, 600);
+        // setExtendedState(JFrame.MAXIMIZED_BOTH);
+        setExtendedState(JFrame.MAXIMIZED_BOTH); // Maximize the window
+        setSize(Toolkit.getDefaultToolkit().getScreenSize()); // Set size to screen resolution
+
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         getContentPane().setBackground(Color.LIGHT_GRAY);

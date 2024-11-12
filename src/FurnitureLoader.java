@@ -34,8 +34,13 @@ public class FurnitureLoader {
 
     }
 
-    // this was copied
-    // don't have an understanding yet
+    public static FurnitureLoader getInstance() {
+        if (instance == null) {
+            instance = new FurnitureLoader();
+        }
+        return instance;
+    }
+
     private BufferedImage loadImage(String fileName) {
         try {
             String absolutePath = new File(fileName).getAbsolutePath();
@@ -46,13 +51,6 @@ public class FurnitureLoader {
             System.out.println("File not found: " + fileName);;
         }
         return null;
-    }
-
-    public static FurnitureLoader getInstance() {
-        if (instance == null) {
-            instance = new FurnitureLoader();
-        }
-        return instance;
     }
 
     public BufferedImage getFurnitureImage(int index) {
