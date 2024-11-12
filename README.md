@@ -19,6 +19,13 @@ The workspace contains two folders by default, where:
 
 Run **SketchApp.java** to run program. Meanwhile, the compiled output files will be generated in the `bin` folder by default.
 
+## Dependency:
+
+This project requires Gson and Gson extra library. Default VS Code build tools were used so libraries need to be added manually.
+
+- [gson-2.11.0](https://mvnrepository.com/artifact/com.google.code.gson/gson/2.11.0)
+- [gson-extra-1.2.0](https://mvnrepository.com/artifact/org.danilopianini/gson-extras/1.2.0)
+
 ---
 
 ## Resources
