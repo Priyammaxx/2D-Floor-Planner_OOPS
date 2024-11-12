@@ -2,21 +2,20 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Rectangle;
-import java.awt.image.BufferedImage;
 
 // This will be changed later
 // Furniture will render PNGS
 
 public class Furniture extends CanvasObject{
-
-    Image image;
+    public String type = "Furniture";
+    int imageIndex;
     
-    public Furniture(int x, int y, int width, int height, BufferedImage image) {
+    public Furniture(int x, int y, int width, int height, int imageIndex) {
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
-        this.image = image;
+        this.imageIndex = imageIndex;
         layer = 1;
     }
 
@@ -28,6 +27,7 @@ public class Furniture extends CanvasObject{
         // // remove above part later
         // g2d.setColor(Color.BLACK);
         // g2d.draw(this);
+        Image image = FurnitureLoader.getInstance().getFurnitureImage(imageIndex);
         if (image != null) {
             g.drawImage(image, this.x, this.y, this.width, this.height, null);
         } else {
@@ -48,5 +48,14 @@ public class Furniture extends CanvasObject{
         this.y += deltaY;
     }
 
+    @Override
+    public String getType() {
+        return this.type;
+    }
+
+    // temp function, if deleted make make imageIndex public, changes in CanvasObjectTypeAdapter
+    public int getImageIndex() {
+        return this.imageIndex;
+    }
 
 }

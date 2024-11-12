@@ -111,27 +111,27 @@ public class ToolPanel extends JPanel {
 
         kitchenSinkButton.addActionListener(e -> {
             if (app.getDrawingTool() instanceof FurnitureTool furnitureTool) {
-                furnitureTool.setImage(furnitureLoader.getKitchenSink());
+                furnitureTool.setImageIndex(0);
             }
         });
         showerButton.addActionListener(e -> {
             if (app.getDrawingTool() instanceof FurnitureTool furnitureTool) {
-                furnitureTool.setImage(furnitureLoader.getShower());
+                furnitureTool.setImageIndex(1);
             }
         });
         stoveButton.addActionListener(e -> {
             if (app.getDrawingTool() instanceof FurnitureTool furnitureTool) {
-                furnitureTool.setImage(furnitureLoader.getStove());
+                furnitureTool.setImageIndex(2);
             }
         });
         toiletButton.addActionListener(e -> {
             if (app.getDrawingTool() instanceof FurnitureTool furnitureTool) {
-                furnitureTool.setImage(furnitureLoader.getToilet());
+                furnitureTool.setImageIndex(3);
             }
         });
         washbasinButton.addActionListener(e -> {
             if (app.getDrawingTool() instanceof FurnitureTool furnitureTool) {
-                furnitureTool.setImage(furnitureLoader.getWashbasin());
+                furnitureTool.setImageIndex(4);
             }
         });
         

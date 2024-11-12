@@ -2,6 +2,7 @@
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import javax.imageio.ImageIO;
 
 public class FurnitureLoader {
@@ -12,6 +13,7 @@ public class FurnitureLoader {
     BufferedImage stove;
     BufferedImage toilet;
     BufferedImage washbasin;
+    ArrayList<BufferedImage> furnitureImages;
     
     // NOTE : also add BED, couch, dining Table, Almira !!
 
@@ -21,6 +23,15 @@ public class FurnitureLoader {
         stove = loadImage("res/stove.png");
         toilet = loadImage("res/toilet.png");
         washbasin = loadImage("res/washbasin.png");
+        
+        furnitureImages = new ArrayList<>();
+
+        furnitureImages.add(kitchenSink); // index = 0
+        furnitureImages.add(shower); // index = 1
+        furnitureImages.add(stove); // index = 2
+        furnitureImages.add(toilet); // index = 3
+        furnitureImages.add(washbasin); // index= 4
+
     }
 
     // this was copied
@@ -44,24 +55,8 @@ public class FurnitureLoader {
         return instance;
     }
 
-    public BufferedImage getKitchenSink() {
-        return this.kitchenSink;
-    }
-
-    public BufferedImage getShower() {
-        return this.shower;
-    }
-
-    public BufferedImage getStove() {
-        return this.stove;
-    }
-
-    public BufferedImage getToilet() {
-        return this.toilet;
-    
-    }
-    public BufferedImage getWashbasin() {
-        return this.washbasin;
+    public BufferedImage getFurnitureImage(int index) {
+        return this.furnitureImages.get(index);
     }
 
 }
