@@ -58,4 +58,6 @@ public class Furniture extends CanvasObject{
         return this.imageIndex;
     }
 
+    
+
 }

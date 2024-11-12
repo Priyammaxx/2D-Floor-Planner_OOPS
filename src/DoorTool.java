@@ -1,3 +1,5 @@
+
+
 public class DoorTool extends DrawingTool {
 
     private int startX;
@@ -34,11 +36,13 @@ public class DoorTool extends DrawingTool {
         int count = 0;
         Room lastIntersected = null;
         for (CanvasObject object: CanvasObjectManager.getInstance().getObjects()) {
-            if (currentObject.intersects(object)
-            && currentObject != object
-            && object instanceof Room) {
-                lastIntersected = (Room)object;
-                count += 1;
+            if (currentObject.intersects(object) && currentObject != object) {
+                if (object instanceof Room) {
+                    lastIntersected = (Room)object;
+                    count += 1;
+                } else if (object instanceof Door || object instanceof Window) {
+                    return false;
+                }
             }
         }
         if (count == 0) return false;
