@@ -30,10 +30,12 @@ public class WindowTool extends DrawingTool {
     private boolean borderCheck() {
         int count = 0;
         for (CanvasObject object : CanvasObjectManager.getInstance().getObjects()) {
-            if (currentObject.intersects(object)
-            && currentObject != object
-            && object instanceof Room) {
-                count += 1;
+            if (currentObject.intersects(object) && currentObject != object) {
+                if (object instanceof Room) {
+                    count += 1;
+                } else if (object instanceof  Door || object instanceof Window) {
+                    return false;
+                }
             }
         }
         return count == 1;

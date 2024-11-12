@@ -4,8 +4,11 @@ import java.awt.Color;
 import java.awt.Composite;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.Stroke;
 import java.awt.event.ActionEvent;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
@@ -36,8 +39,8 @@ public class SketchPanel extends JPanel{
     private JLabel statusLabel;
     private boolean relativePositionLock = false;
     private boolean roomSelected = false;
-    public static BufferedImage canvas;
-    public static BufferedImage canvasOverlay;
+    public static BufferedImage canvas = null;
+    public static BufferedImage canvasOverlay = null;
 
     private final float[] dashPattern = {5, 5};
     private final Stroke dashedStroke = new BasicStroke(2, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10, dashPattern, 0);
@@ -224,8 +227,12 @@ public class SketchPanel extends JPanel{
                 if (finishedObject != null) {
                     if (drawingTool instanceof SelectTool) {
                         if (moveCollision(finishedObject)) {
-                            System.out.println("Collision detected on MOVE");
-                            JOptionPane.showMessageDialog(null, "Click OK to revert to previous position", "Overlap Detected", JOptionPane.OK_OPTION, null);
+                            // System.out.println("Collision detected on MOVE");
+                            if (finishedObject instanceof Door || finishedObject instanceof Window) {
+                                JOptionPane.showMessageDialog(null, "Cannot move Door or Window", "No move", JOptionPane.WARNING_MESSAGE, null);
+                            } else {
+                                JOptionPane.showMessageDialog(null, "Click OK to revert to previous position", "Overlap Detected", JOptionPane.OK_OPTION, null);
+                            }
                             objectManager.removeObject(finishedObject);
                             objectManager.addObject(copiedObject);
                         } 
@@ -271,8 +278,38 @@ public class SketchPanel extends JPanel{
 
         // ------ NEW CODE ---------
         // for later, set dynamic width and height
-        canvas = new BufferedImage(800, 600, BufferedImage.TYPE_INT_ARGB);
-        canvasOverlay = new BufferedImage(800, 600, BufferedImage.TYPE_INT_ARGB);
+        addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                resizeBufferedImage();
+                repaint();
+            }
+        });
+        // canvas = new BufferedImage(getSize().width, getSize().height, BufferedImage.TYPE_INT_ARGB);
+        // canvasOverlay = new BufferedImage(getSize().width, getSize().height, BufferedImage.TYPE_INT_ARGB);
+    }
+
+    private void resizeBufferedImage() {
+        int newWidth = getWidth();
+        int newHeight = getHeight();
+
+        if (newWidth > 0 && newHeight > 0) {
+            BufferedImage newCanvas = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_ARGB);
+            BufferedImage newCanvasOverlay = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_ARGB);
+
+            Graphics2D g2d = newCanvas.createGraphics();
+            g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+            g2d.drawImage(canvas, 0, 0, newWidth, newHeight, null);
+            g2d.dispose();
+
+            Graphics2D g2dOverlay = newCanvasOverlay.createGraphics();
+            g2dOverlay.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+            g2dOverlay.drawImage(canvasOverlay, 0, 0, newWidth, newHeight, null);
+            g2dOverlay.dispose();
+
+            canvas = newCanvas;
+            canvasOverlay = newCanvasOverlay;
+        }
     }
 
     //We got the status label to put in collision and rotation detection
@@ -442,10 +479,13 @@ public class SketchPanel extends JPanel{
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        redrawBuffer(g);
-
-        // g.drawImage(canvas, 0, 0, null);
-        g.drawImage(canvasOverlay, 0, 0, null); // draws windows and doors
+        if (canvas != null) {
+            redrawBuffer(g);
+    
+            // g.drawImage(canvas, 0, 0, null);
+            g.drawImage(canvasOverlay, 0, 0, null); // draws windows and doors
+            
+        }
     }
 
     private void paintOverBlack(CanvasObject object, Graphics2D overlay) {
@@ -567,15 +607,5 @@ public class SketchPanel extends JPanel{
         // redrawBuffer();
         
     }
-
-    // find object at the given coordinates
-    // private CanvasObject getObjectAt(int x, int y) {
-    //     for (CanvasObject obj : objects) {
-    //         if(obj.contains(x, y)) {
-    //             return obj;
-    //         }
-    //     }
-    //     return null;
-    // }
 
 }

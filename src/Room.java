@@ -5,7 +5,7 @@ import java.awt.Rectangle;
 
 public class Room extends CanvasObject{
     private Color color;
-    private float alpha = 0.40f;
+    public String type = "Room";
 
     public Room(int x, int y, int width, int height, Color color) {
         this.x = x;
@@ -13,7 +13,6 @@ public class Room extends CanvasObject{
         this.width = width;
         this.height = height;
         layer = 0; // newly added
-        // this.color = new Color(color.getRed(), color.getGreen(), color.getBlue(), (int)(alpha * 255));
         this.color = new Color(color.getRed(), color.getGreen(), color.getBlue(), 100);
     }
 
@@ -50,4 +49,14 @@ public class Room extends CanvasObject{
         return this.color;
     }
 
+    @Override
+    public String getType() {
+        return this.type;
+    }
+
+    // extra function, may delete later
+    // if deleted: make alpha public, make changes in CanvasOjbectTypeAdapter
+    public float getAlpha() {
+        return this.alpha;
+    }
 }

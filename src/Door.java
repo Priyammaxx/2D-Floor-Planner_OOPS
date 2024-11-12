@@ -4,6 +4,7 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 
 public class Door extends CanvasObject {
+    public String type = "Door";
 
     public Door(int x, int y, int width, int height) {
         this.x = x;
@@ -32,6 +33,11 @@ public class Door extends CanvasObject {
     public void move(int deltaX, int deltaY) {
         this.x += deltaX;
         this.y += deltaY;
+    }
+
+    @Override
+    public String getType() {
+        return this.type;
     }
     
 }

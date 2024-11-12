@@ -2,6 +2,7 @@
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
+import java.awt.Toolkit;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -21,11 +22,15 @@ public class SketchApp extends JFrame{
     boolean snapEnabled = true;
     boolean gridEnabled = true;
     private JLabel statusLabel;
-    private FurnitureLoader furnitureLoader = FurnitureLoader.getInstance();
+    private FileManager fileManager;
 
     public SketchApp() {
         setTitle("2D Floor Planner");
-        setSize(800, 600);
+        // setSize(800, 600);
+        // setExtendedState(JFrame.MAXIMIZED_BOTH);
+        setExtendedState(JFrame.MAXIMIZED_BOTH); // Maximize the window
+        setSize(Toolkit.getDefaultToolkit().getScreenSize()); // Set size to screen resolution
+
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         getContentPane().setBackground(Color.LIGHT_GRAY);
@@ -49,6 +54,9 @@ public class SketchApp extends JFrame{
         
         //Sending Label to SketchPanel for move collision detections
         sketchPanel.getJLabel(statusLabel);
+
+        // file manager
+        fileManager = new FileManager(this, sketchPanel);
         
         
         // ----------- Adding Area ---------------
@@ -91,7 +99,8 @@ public class SketchApp extends JFrame{
 
 
         //Implementing save feature
-        //saveFile.addActionListener(e -> saveFloorPlan(this));
+        saveFile.addActionListener(e -> fileManager.saveToFile());
+        openFile.addActionListener(e -> fileManager.loadFromFile());
 
         fileMenu.add(newFile);
         fileMenu.add(openFile);

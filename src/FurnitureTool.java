@@ -1,15 +1,14 @@
-import java.awt.image.BufferedImage;
 
 public class FurnitureTool extends DrawingTool {
 
     private int startX;
     private int startY;
-    BufferedImage image = FurnitureLoader.getInstance().getKitchenSink();
+    private int imageIndex = 0;
     // default image set to be Kitchen Sink
 
     @Override
     public void startDrawing(int x, int y) {
-        currentObject = new Furniture(x, y, 0, 0, image);
+        currentObject = new Furniture(x, y, 0, 0, imageIndex);
         startX = x;
         startY = y;
     }
@@ -29,8 +28,8 @@ public class FurnitureTool extends DrawingTool {
         currentObject = null;
     }
 
-    public void setImage(BufferedImage image) {
-        this.image = image;
+    public void setImageIndex(int index) {
+        this.imageIndex = index;
     }
     
 }

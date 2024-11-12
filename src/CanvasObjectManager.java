@@ -94,4 +94,8 @@ public class CanvasObjectManager {
     public ArrayList<CanvasObject> getObjects() {
         return objects;
     }
+
+    public void loadObjects(ArrayList<CanvasObject> importedObjects) {
+        this.objects = importedObjects;
+    }
 }
