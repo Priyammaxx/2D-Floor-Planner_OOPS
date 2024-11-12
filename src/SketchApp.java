@@ -21,7 +21,7 @@ public class SketchApp extends JFrame{
     boolean snapEnabled = true;
     boolean gridEnabled = true;
     private JLabel statusLabel;
-    private FurnitureLoader furnitureLoader = FurnitureLoader.getInstance();
+    private FileManager fileManager;
 
     public SketchApp() {
         setTitle("2D Floor Planner");
@@ -49,6 +49,9 @@ public class SketchApp extends JFrame{
         
         //Sending Label to SketchPanel for move collision detections
         sketchPanel.getJLabel(statusLabel);
+
+        // file manager
+        fileManager = new FileManager(this, sketchPanel);
         
         
         // ----------- Adding Area ---------------
@@ -91,7 +94,8 @@ public class SketchApp extends JFrame{
 
 
         //Implementing save feature
-        //saveFile.addActionListener(e -> saveFloorPlan(this));
+        saveFile.addActionListener(e -> fileManager.saveToFile());
+        openFile.addActionListener(e -> fileManager.loadFromFile());
 
         fileMenu.add(newFile);
         fileMenu.add(openFile);
