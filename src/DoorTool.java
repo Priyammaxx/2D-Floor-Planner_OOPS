@@ -34,19 +34,34 @@ public class DoorTool extends DrawingTool {
     //      doesn't check for anything else, goes out of bound of house region
     private boolean borderCheck() {
         int count = 0;
+        int firstRoomX = 0;
+        int firstRoomY = 0;
+        int distanceX = 0;
+        int distanceY = 0;
         Room lastIntersected = null;
         for (CanvasObject object: CanvasObjectManager.getInstance().getObjects()) {
             if (currentObject.intersects(object) && currentObject != object) {
                 if (object instanceof Room) {
                     lastIntersected = (Room)object;
                     count += 1;
-                } else if (object instanceof Door || object instanceof Window) {
+                    if (count == 1){
+                        firstRoomX = lastIntersected.x ;
+                        firstRoomY = lastIntersected.y;
+                    }
+                    if (count == 2 ){
+                        distanceX = lastIntersected.x + lastIntersected.width - firstRoomX;
+                        distanceY = lastIntersected.y + lastIntersected.height - firstRoomY;
+                        //System.out.println("Distance is " + distanceX + " " + lastIntersected.x + " "+ firstRoomX); //Debug code
+                    }
+                        
+                } else if (object instanceof Door || object instanceof Window)  {
                     return false;
                 }
             }
         }
         if (count == 0) return false;
-        return (count == 2 || (count == 1 && (lastIntersected.getColor().getGreen() != 255 && lastIntersected.getColor().getBlue() != 255)) );
+        return ((count == 2  && (distanceX == 0 || distanceY == 0))
+                || (count == 1 && (lastIntersected.getColor().getGreen() != 255 && lastIntersected.getColor().getBlue() != 255)) );
     }
     
 }
