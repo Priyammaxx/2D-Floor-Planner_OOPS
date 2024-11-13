@@ -451,10 +451,12 @@ public class SketchPanel extends JPanel{
 
     boolean rotateCollision(CanvasObject selectedObject) {
         for (CanvasObject object: objectManager.getObjects()) {
-            if (selectedObject != object && 
-            !copiedObject.contains(object) && 
-            selectedObject.intersects(object)) {
-                updateStatusLabel("Collision on rotate");
+            if( selectedObject != object 
+                && !copiedObject.contains(object) 
+                && selectedObject.intersects(object)
+                && !(selectedObject instanceof Furniture)
+                ){
+                    updateStatusLabel("Collision on rotate");
                 return true;
             }
         }
