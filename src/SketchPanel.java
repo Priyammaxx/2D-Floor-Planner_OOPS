@@ -37,6 +37,7 @@ public class SketchPanel extends JPanel{
     CanvasObject clonedObject;
     CanvasObject staticObject;
     CanvasObject selectedObject;
+    CanvasObject copyObject;
     String[] positioning = new String[2];
     private JLabel statusLabel;
     private boolean relativePositionLock = false;
@@ -200,14 +201,19 @@ public class SketchPanel extends JPanel{
             // redrawBuffer();
             if(relativePositionLock){
                 relativePlacement(positioning, staticObject, clonedObject);
+                if(moveCollision(clonedObject)){
+                    updateStatusLabel("Room Overlapping!!");
+                }
                 relativePositionLock = false;
+                clonedObject = null;
+                staticObject = null;
             }
             if(relativeAlignmentLock){
                 relativeAlignment(positioning, selectedObject, staticObject);
                 relativeAlignmentLock = false;
-            }
-            if(moveCollision(clonedObject)){
-                updateStatusLabel("Room Overlapping!");
+                selectedObject = null;
+                staticObject = null;
+                repaint();
             }
         });
 
@@ -218,14 +224,19 @@ public class SketchPanel extends JPanel{
             // redrawBuffer();
             if(relativePositionLock){
                 relativePlacement(positioning, staticObject, clonedObject);
+                if(moveCollision(clonedObject)){
+                    updateStatusLabel("Room Overlapping!!");
+                }
                 relativePositionLock = false;
+                clonedObject = null;
+                staticObject = null;
             }
             if(relativeAlignmentLock){
                 relativeAlignment(positioning, selectedObject, staticObject);
                 relativeAlignmentLock = false;
-            }
-            if(moveCollision(clonedObject)){
-                updateStatusLabel("Room Overlapping!!");
+                selectedObject = null;
+                staticObject = null;
+                repaint();
             }
         });
 
@@ -236,14 +247,19 @@ public class SketchPanel extends JPanel{
             // redrawBuffer();
             if(relativePositionLock){
                 relativePlacement(positioning, staticObject, clonedObject);
+                if(moveCollision(clonedObject)){
+                    updateStatusLabel("Room Overlapping!!");
+                }
                 relativePositionLock = false;
+                clonedObject = null;
+                staticObject = null;
             }
             if(relativeAlignmentLock){
                 relativeAlignment(positioning, selectedObject, staticObject);
                 relativeAlignmentLock = false;
-            }
-            if(moveCollision(clonedObject)){
-                updateStatusLabel("Room Overlapping!!");
+                selectedObject = null;
+                staticObject = null;
+                repaint();
             }
         });
 
@@ -415,6 +431,21 @@ public class SketchPanel extends JPanel{
         }
         return false;
     }
+
+    boolean checkCollision(CanvasObject selectedObject) {
+        for (CanvasObject object: objectManager.getObjects()) {
+            if (!object.equals(selectedObject) && object.intersects(selectedObject) &&
+            !(object instanceof Room && selectedObject instanceof Furniture && object.contains(selectedObject)) 
+            && !(selectedObject instanceof Room && object instanceof Furniture && selectedObject.contains(object)) || selectedObject.equals(object)) {
+                
+                updateStatusLabel("Collision on move");
+
+                return true;
+            }
+        }
+        return false;
+    }
+
     boolean rotateCollision(CanvasObject selectedObject) {
         for (CanvasObject object: objectManager.getObjects()) {
             if (selectedObject != object && 
@@ -677,6 +708,8 @@ public class SketchPanel extends JPanel{
         }
         if (!objectManager.getObjects().contains(movable)) {
             objectManager.addObject(movable);
+        }else{
+            statusLabel.setText("Collision on move");
         }
         revalidate();
         repaint();
@@ -685,6 +718,10 @@ public class SketchPanel extends JPanel{
     }
 
     private void relativeAlignment(String[] arr, CanvasObject initial, CanvasObject movable){
+        int initx = movable.x;
+        int inity = movable.y;
+        int initwidth = movable.width;
+        int initheight = movable.height;
         if(arr[0].equals("N")){
             if(arr[1].equals("L")){
                 movable.setBounds(initial.x,initial.y - movable.height, movable.width, movable.height);
@@ -726,6 +763,10 @@ public class SketchPanel extends JPanel{
             }
         }
         
+        if(moveCollision(movable)){
+            movable.setBounds(initx, inity, initwidth, initheight);
+            statusLabel.setText("Collision on Alignment");
+        }
         // redrawBuffer();
         
     }
