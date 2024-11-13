@@ -1,4 +1,3 @@
-import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.geom.AffineTransform;
@@ -32,8 +31,6 @@ public class Furniture extends CanvasObject{
         }
         g2d.drawImage(getRotatedImage(image), this.x, this.y, this.width, this.height, null);
 
-        g2d.setColor(Color.red);
-        g2d.draw(this);
     }
 
     private BufferedImage getRotatedImage(BufferedImage image) {
@@ -45,7 +42,8 @@ public class Furniture extends CanvasObject{
         AffineTransform transform = new AffineTransform();
         transform.rotate(rotationAngle, w/2.0, h/2.0);
         g2d.setTransform(transform);
-        g2d.drawImage(image, 0,0, null);
+
+        g2d.drawImage(image, 0, 0, null);
         g2d.dispose();
 
         return rotatedImage;

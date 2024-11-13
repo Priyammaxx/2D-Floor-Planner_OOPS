@@ -16,7 +16,7 @@ public class Door extends CanvasObject {
 
     @Override
     void draw(Graphics2D g2d) {
-        g2d.setColor(new Color(173,216,230));
+        g2d.setColor(Color.gray);
         g2d.draw(this);;
     }
 
