@@ -103,41 +103,55 @@ public class ToolPanel extends JPanel {
         
         // ------ Furniture ----------
         JPanel furnitureOptionsPanel = new JPanel(new GridLayout(0,1));
+        JButton bedButton = new JButton("Bed");
+        JButton diningTableButton = new JButton("Dining Table");
         JButton kitchenSinkButton = new JButton("Kitchen Sink");
         JButton showerButton = new JButton("Shower");
         JButton stoveButton = new JButton("Stove");
         JButton toiletButton = new JButton("Toilet");
         JButton washbasinButton = new JButton("Washbasin");
 
-        kitchenSinkButton.addActionListener(e -> {
+        bedButton.addActionListener(e -> {
             if (app.getDrawingTool() instanceof FurnitureTool furnitureTool) {
                 furnitureTool.setImageIndex(0);
             }
         });
-        showerButton.addActionListener(e -> {
+        diningTableButton.addActionListener(e -> {
             if (app.getDrawingTool() instanceof FurnitureTool furnitureTool) {
                 furnitureTool.setImageIndex(1);
             }
         });
-        stoveButton.addActionListener(e -> {
+        kitchenSinkButton.addActionListener(e -> {
             if (app.getDrawingTool() instanceof FurnitureTool furnitureTool) {
                 furnitureTool.setImageIndex(2);
             }
         });
-        toiletButton.addActionListener(e -> {
+        stoveButton.addActionListener(e -> {
             if (app.getDrawingTool() instanceof FurnitureTool furnitureTool) {
                 furnitureTool.setImageIndex(3);
             }
         });
-        washbasinButton.addActionListener(e -> {
+        showerButton.addActionListener(e -> {
             if (app.getDrawingTool() instanceof FurnitureTool furnitureTool) {
                 furnitureTool.setImageIndex(4);
             }
         });
+        toiletButton.addActionListener(e -> {
+            if (app.getDrawingTool() instanceof FurnitureTool furnitureTool) {
+                furnitureTool.setImageIndex(5);
+            }
+        });
+        washbasinButton.addActionListener(e -> {
+            if (app.getDrawingTool() instanceof FurnitureTool furnitureTool) {
+                furnitureTool.setImageIndex(6);
+            }
+        });
         
+        furnitureOptionsPanel.add(bedButton);
+        furnitureOptionsPanel.add(diningTableButton);
         furnitureOptionsPanel.add(kitchenSinkButton);
-        furnitureOptionsPanel.add(showerButton);
         furnitureOptionsPanel.add(stoveButton);
+        furnitureOptionsPanel.add(showerButton);
         furnitureOptionsPanel.add(toiletButton);
         furnitureOptionsPanel.add(washbasinButton);
         
