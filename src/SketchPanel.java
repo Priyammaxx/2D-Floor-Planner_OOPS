@@ -420,9 +420,12 @@ public class SketchPanel extends JPanel{
     // checking collision when moving objects around
     boolean moveCollision(CanvasObject selectedObject) {
         for (CanvasObject object: objectManager.getObjects()) {
-            if (!object.equals(selectedObject) && object.intersects(selectedObject) &&
-            !(object instanceof Room && selectedObject instanceof Furniture && object.contains(selectedObject)) 
-            && !(selectedObject instanceof Room && object instanceof Furniture && selectedObject.contains(object))) {
+            if (!object.equals(selectedObject) 
+                && object.intersects(selectedObject)
+                && !(object instanceof Room && selectedObject instanceof Furniture && object.contains(selectedObject)) 
+                && !(selectedObject instanceof Room && object instanceof Furniture && selectedObject.contains(object))
+                && !(selectedObject instanceof Furniture  && (object instanceof Window ||  object instanceof Door ))
+                ){
                 
                 updateStatusLabel("Collision on move");
 
