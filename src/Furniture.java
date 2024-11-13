@@ -1,7 +1,8 @@
-import java.awt.Graphics;
+import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.Rectangle;
+import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
 
 // This will be changed later
 // Furniture will render PNGS
@@ -9,6 +10,7 @@ import java.awt.Rectangle;
 public class Furniture extends CanvasObject{
     public String type = "Furniture";
     int imageIndex;
+    private double rotationAngle = 0.0;
     
     public Furniture(int x, int y, int width, int height, int imageIndex) {
         this.x = x;
@@ -21,19 +23,32 @@ public class Furniture extends CanvasObject{
 
     @Override
     public void draw(Graphics2D g2d) {
-        Graphics g = (Graphics) g2d;
-        // g2d.setColor(Color.orange);
-        // g2d.fill(this); // to color inside of rectangle
-        // // remove above part later
-        // g2d.setColor(Color.BLACK);
-        // g2d.draw(this);
-        Image image = FurnitureLoader.getInstance().getFurnitureImage(imageIndex);
-        if (image != null) {
-            g.drawImage(image, this.x, this.y, this.width, this.height, null);
-        } else {
-            System.out.println("not loaded");
+        // Graphics g = (Graphics) g2d;
+
+        BufferedImage image = FurnitureLoader.getInstance().getFurnitureImage(imageIndex);
+        if (image == null) {
+            System.out.println("Image not loaded");
+            return;
         }
-        
+        g2d.drawImage(getRotatedImage(image), this.x, this.y, this.width, this.height, null);
+
+        g2d.setColor(Color.red);
+        g2d.draw(this);
+    }
+
+    private BufferedImage getRotatedImage(BufferedImage image) {
+        int w = image.getWidth();
+        int h = image.getHeight();
+        BufferedImage rotatedImage = new BufferedImage(w, h, image.getType());
+        Graphics2D g2d = rotatedImage.createGraphics();
+
+        AffineTransform transform = new AffineTransform();
+        transform.rotate(rotationAngle, w/2.0, h/2.0);
+        g2d.setTransform(transform);
+        g2d.drawImage(image, 0,0, null);
+        g2d.dispose();
+
+        return rotatedImage;
     }
 
     @Override
@@ -58,6 +73,9 @@ public class Furniture extends CanvasObject{
         return this.imageIndex;
     }
 
-    
+    public void rotateImage(double angle) {
+        rotationAngle += Math.toRadians(angle);
+        // use this before rectangle rotation
+    }    
 
 }
