@@ -313,6 +313,7 @@ public class SketchPanel extends JPanel{
 
             @Override
             public void mouseReleased(MouseEvent e) {
+                if(!relativeAlignmentLock && !relativePositionLock){
                 finishedObject = drawingTool.getCurrentObject();
                 if (finishedObject != null) {
                     if (drawingTool instanceof SelectTool) {
@@ -338,6 +339,7 @@ public class SketchPanel extends JPanel{
                 repaint();
                 // redrawBuffer();
             }
+        }
 
             private void showPopup(MouseEvent e) {
                 if(!(finishedObject instanceof Room)){
