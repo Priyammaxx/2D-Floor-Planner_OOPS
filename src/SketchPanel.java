@@ -416,6 +416,19 @@ public class SketchPanel extends JPanel{
         }
     }
 
+    //Complete Overlap Function
+    private boolean completeOverlapcheck(CanvasObject co){
+        for(CanvasObject object : objectManager.getObjects()){
+            if(!(co == object)){
+                if(object.x == co.x && object.y == co.y && object.width == co.width && object.height == co.height){
+                    return true;
+                    
+                }
+            }
+            } 
+        return false;
+    }
+
 
     // checking collision when moving objects around
     boolean moveCollision(CanvasObject selectedObject) {
@@ -766,9 +779,11 @@ public class SketchPanel extends JPanel{
             }
         }
         
-        if(moveCollision(movable)){
+        if(moveCollision(movable) || completeOverlapcheck(movable)){
+            updateStatusLabel("Collision on Alignment");
             movable.setBounds(initx, inity, initwidth, initheight);
-            statusLabel.setText("Collision on Alignment");
+            
+            
         }
         // redrawBuffer();
         
