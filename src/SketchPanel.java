@@ -464,10 +464,12 @@ public class SketchPanel extends JPanel{
 
     boolean rotateCollision(CanvasObject selectedObject) {
         for (CanvasObject object: objectManager.getObjects()) {
-            if (selectedObject != object && 
-            !copiedObject.contains(object) && 
-            selectedObject.intersects(object)) {
-                updateStatusLabel("Collision on rotate");
+            if( selectedObject != object 
+                && !copiedObject.contains(object) 
+                && selectedObject.intersects(object)
+                && !(selectedObject instanceof Furniture)
+                ){
+                    updateStatusLabel("Collision on rotate");
                 return true;
             }
         }
@@ -547,8 +549,8 @@ public class SketchPanel extends JPanel{
     // }
     
     // --------Experimental code ----------
-    private void redrawBuffer(Graphics g) {
-        Graphics2D g2d = (Graphics2D) g;
+    private void redrawBuffer(Graphics2D g2d) {
+        // Graphics2D g2d = (Graphics2D) g;
         Graphics2D canvasg2d = canvas.createGraphics();
         Graphics2D overlay = canvasOverlay.createGraphics();
 
@@ -602,11 +604,12 @@ public class SketchPanel extends JPanel{
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
+        Graphics2D g2d = (Graphics2D) g;
         if (canvas != null) {
-            redrawBuffer(g);
+            redrawBuffer(g2d);
     
             // g.drawImage(canvas, 0, 0, null);
-            g.drawImage(canvasOverlay, 0, 0, null); // draws windows and doors
+            g2d.drawImage(canvasOverlay, 0, 0, null); // draws windows and doors
             
         }
     }

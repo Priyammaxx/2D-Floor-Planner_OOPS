@@ -8,29 +8,34 @@ import javax.imageio.ImageIO;
 public class FurnitureLoader {
     private static FurnitureLoader instance;
 
-    BufferedImage kitchenSink;
-    BufferedImage shower;
-    BufferedImage stove;
-    BufferedImage toilet;
-    BufferedImage washbasin;
+    // BufferedImage kitchenSink;
+    // BufferedImage shower;
+    // BufferedImage stove;
+    // BufferedImage toilet;
+    // BufferedImage washbasin;
     ArrayList<BufferedImage> furnitureImages;
     
     // NOTE : also add BED, couch, dining Table, Almira !!
 
     private FurnitureLoader() {
-        kitchenSink = loadImage("res/kitchenSink.png");
-        shower = loadImage("res/shower.png");
-        stove = loadImage("res/stove.png");
-        toilet = loadImage("res/toilet.png");
-        washbasin = loadImage("res/washbasin.png");
+        BufferedImage bed = loadImage("res/bed_color.png");
+        BufferedImage diningTable = loadImage("res/diningTable_color.png");
+        BufferedImage kitchenSink = loadImage("res/kitchenSink_color.png");
+        BufferedImage stove = loadImage("res/stove_color.png");
+        BufferedImage shower = loadImage("res/shower_color.png");
+        BufferedImage toilet = loadImage("res/toilet_color.png");
+        BufferedImage washbasin = loadImage("res/washbasin_color.png");
         
-        furnitureImages = new ArrayList<>();
 
-        furnitureImages.add(kitchenSink); // index = 0
-        furnitureImages.add(shower); // index = 1
-        furnitureImages.add(stove); // index = 2
-        furnitureImages.add(toilet); // index = 3
-        furnitureImages.add(washbasin); // index= 4
+        furnitureImages = new ArrayList<>();
+        
+        furnitureImages.add(bed); // index = 0
+        furnitureImages.add(diningTable); // index = 1
+        furnitureImages.add(kitchenSink); // index = 2
+        furnitureImages.add(stove); // index = 3
+        furnitureImages.add(shower); // index = 4
+        furnitureImages.add(toilet); // index = 5
+        furnitureImages.add(washbasin); // index= 6
 
     }
 
