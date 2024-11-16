@@ -153,6 +153,8 @@ public class SketchPanel extends JPanel{
 
         south.addActionListener((ActionEvent e) -> {
             positioning[0] = "S";
+            updateStatusLabel("Select a Room.");
+            relativePositionLock = true;
             repaint();
             // redrawBuffer();
         });
