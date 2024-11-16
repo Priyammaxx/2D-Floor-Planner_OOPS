@@ -318,7 +318,7 @@ public class SketchPanel extends JPanel{
                 if (finishedObject != null) {
                     if (drawingTool instanceof SelectTool) {
                         if (moveCollision(finishedObject)) {
-                            // System.out.println("Collision detected on MOVE");
+                             System.out.println("Collision detected on MOVE");
                             if (finishedObject instanceof Door || finishedObject instanceof Window) {
                                 JOptionPane.showMessageDialog(null, "Cannot move Door or Window", "No move", JOptionPane.WARNING_MESSAGE, null);
                             } else {
@@ -435,14 +435,20 @@ public class SketchPanel extends JPanel{
     // checking collision when moving objects around
     boolean moveCollision(CanvasObject selectedObject) {
         for (CanvasObject object: objectManager.getObjects()) {
+
             if (!object.equals(selectedObject) 
-                && object.intersects(selectedObject)
+                && object.intersects(selectedObject) 
                 && !(object instanceof Room && selectedObject instanceof Furniture && object.contains(selectedObject)) 
                 && !(selectedObject instanceof Room && object instanceof Furniture && selectedObject.contains(object))
-                && !(selectedObject instanceof Furniture  && (object instanceof Window ||  object instanceof Door ))
+                //&& !(selectedObject instanceof Furniture  && (object instanceof Window ||  object instanceof Door ))
+                //Add some condition such that it becomes false when furniture is selected
+                &&  !(object instanceof Door && selectedObject.intersects(object) && selectedObject instanceof Room )
+                
                 ){
                 
                 updateStatusLabel("Collision on move");
+                if ((object instanceof Door  && selectedObject instanceof Room ))
+                    System.out.println("TRUE");
 
                 return true;
             }
