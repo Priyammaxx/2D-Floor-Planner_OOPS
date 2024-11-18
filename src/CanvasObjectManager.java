@@ -36,7 +36,8 @@ public class CanvasObjectManager {
                 if (object.intersects(newObject)
                 && !(object instanceof Room && newObject instanceof Furniture && object.contains(newObject))
                 && !(newObject instanceof Room && object instanceof Furniture && newObject.contains(object))
-                && !(newObject instanceof Furniture  && (object instanceof Window ||  object instanceof Door ) )
+                && !(newObject instanceof Furniture  && (object instanceof Window ||  object instanceof Door ))
+                &&  !(object instanceof Door && newObject.intersects(object) && newObject instanceof Room )
                 //&& !(newObject instanceof Furniture && object instanceof Door)
                 ) {
                     statusLabel.setText("Intersection ERROR!");

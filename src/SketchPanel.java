@@ -719,21 +719,21 @@ public class SketchPanel extends JPanel{
         
         if (arr[0].equals("E")) {
             if (arr[1].equals("L")) {
-                movable.setBounds(initial.x + initial.width, initial.y, movable.height, movable.width);
+                movable.setBounds(initial.x + initial.width, initial.y, movable.width, movable.height);
             } else if (arr[1].equals("R")) {
-                movable.setBounds(initial.x + initial.width, initial.y + initial.height - movable.width, movable.height, movable.width);
+                movable.setBounds(initial.x + initial.width, initial.y + initial.height - movable.height, movable.width, movable.height);
             } else if (arr[1].equals("C")) {
-                movable.setBounds(initial.x + initial.width, initial.y + initial.height/2 - movable.width/2, movable.height, movable.width);
+                movable.setBounds(initial.x + initial.width, initial.y + initial.height/2 - movable.height/2, movable.width, movable.height);
             }
         }
         
         if (arr[0].equals("W")) {
-            if (arr[1].equals("L")) {
-                movable.setBounds(initial.x - movable.height, initial.y, movable.height, movable.width);
-            } else if (arr[1].equals("R")) {
-                movable.setBounds(initial.x - movable.height, initial.y + initial.height - movable.width, movable.height, movable.width);
+            if (arr[1].equals("R")) {
+                movable.setBounds(initial.x - movable.width, initial.y, movable.width, movable.height);
+            } else if (arr[1].equals("L")) {
+                movable.setBounds(initial.x - movable.width, initial.y + initial.height - movable.height, movable.width, movable.height);
             } else if (arr[1].equals("C")) {
-                movable.setBounds(initial.x - movable.height, initial.y + initial.height/2 - movable.width/2, movable.height, movable.width);
+                movable.setBounds(initial.x - movable.width, initial.y + initial.height/2 - movable.height/2, movable.width, movable.height);
             }
         }
         if (!objectManager.getObjects().contains(movable)) {
@@ -775,21 +775,21 @@ public class SketchPanel extends JPanel{
         
         if (arr[0].equals("E")) {
             if (arr[1].equals("L")) {
-                movable.setBounds(initial.x + initial.width, initial.y, movable.height, movable.width);
+                movable.setBounds(initial.x + initial.width, initial.y, movable.width, movable.height);
             } else if (arr[1].equals("R")) {
-                movable.setBounds(initial.x + initial.width, initial.y + initial.height - movable.width, movable.height, movable.width);
+                movable.setBounds(initial.x + initial.width, initial.y + initial.height - movable.height, movable.width, movable.height);
             } else if (arr[1].equals("C")) {
-                movable.setBounds(initial.x + initial.width, initial.y + initial.height/2 - movable.width/2, movable.height, movable.width);
+                movable.setBounds(initial.x + initial.width, initial.y + initial.height/2 - movable.height/2, movable.width, movable.height);
             }
         }
         
         if (arr[0].equals("W")) {
-            if (arr[1].equals("L")) {
-                movable.setBounds(initial.x - movable.height, initial.y, movable.height, movable.width);
-            } else if (arr[1].equals("R")) {
-                movable.setBounds(initial.x - movable.height, initial.y + initial.height - movable.width, movable.height, movable.width);
+            if (arr[1].equals("R")) {
+                movable.setBounds(initial.x - movable.width, initial.y, movable.width, movable.height);
+            } else if (arr[1].equals("L")) {
+                movable.setBounds(initial.x - movable.width, initial.y + initial.height - movable.height, movable.width, movable.height);
             } else if (arr[1].equals("C")) {
-                movable.setBounds(initial.x - movable.height, initial.y + initial.height/2 - movable.width/2, movable.height, movable.width);
+                movable.setBounds(initial.x - movable.width, initial.y + initial.height/2 - movable.height/2, movable.width, movable.height);
             }
         }
         
