@@ -74,5 +74,10 @@ public class DoorTool extends DrawingTool {
         return ((count == 2  && (distanceX == 0 || distanceY == 0 || distanceX1 ==0 || distanceY1 == 0))
                 || (count == 1 && (lastIntersected.getColor().getGreen() != 255 && lastIntersected.getColor().getBlue() != 255)) );
     }
+
+    // ------ New Experimental code ----------
+    // public void setCurrentObject(CanvasObject object) {
+    //     this.currentObject = object;
+    // }
     
 }

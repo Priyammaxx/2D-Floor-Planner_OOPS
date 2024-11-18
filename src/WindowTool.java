@@ -40,5 +40,10 @@ public class WindowTool extends DrawingTool {
         }
         return count == 1;
     }
+
+    // ------ New Experimental code ----------
+    // public void setCurrentObject(CanvasObject object) {
+    //     this.currentObject = object;
+    // }
     
 }

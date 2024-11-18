@@ -333,6 +333,21 @@ public class SketchPanel extends JPanel{
                         //     copiedObject = null;
                         // }
                         showPopup(e);
+
+                        // ----- New experimental Code ---------
+                        // DoorTool dTool = new DoorTool();
+                        // WindowTool wTool = new WindowTool();
+                        // for (CanvasObject object: objectManager.getObjects()) {
+                        //     if (object instanceof Door) {
+                        //         dTool.setCurrentObject(object);
+                        //         dTool.finishDrawing();
+                        //     } else if (object instanceof  Window) {
+                        //         wTool.setCurrentObject(object);
+                        //         wTool.finishDrawing();
+                        //     }
+                        //     repaint();
+                        // }
+
                     } else {
                         objectManager.addObject(finishedObject);
                     }
