@@ -449,9 +449,10 @@ public class SketchPanel extends JPanel{
                 ){
                 
                 updateStatusLabel("Collision on move");
-                if ((object instanceof Door  && selectedObject instanceof Room ))
-                    System.out.println("TRUE");
-
+                //----------Debug code-----
+                // if ((object instanceof Door  && selectedObject instanceof Room ))
+                //     System.out.println("TRUE");
+                //---------------------------- 
                 return true;
             }
         }
