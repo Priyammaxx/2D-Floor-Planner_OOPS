@@ -335,18 +335,7 @@ public class SketchPanel extends JPanel{
                         showPopup(e);
 
                         // ----- New experimental Code ---------
-                        // DoorTool dTool = new DoorTool();
-                        // WindowTool wTool = new WindowTool();
-                        // for (CanvasObject object: objectManager.getObjects()) {
-                        //     if (object instanceof Door) {
-                        //         dTool.setCurrentObject(object);
-                        //         dTool.finishDrawing();
-                        //     } else if (object instanceof  Window) {
-                        //         wTool.setCurrentObject(object);
-                        //         wTool.finishDrawing();
-                        //     }
-                        //     repaint();
-                        // }
+                       
 
                     } else {
                         objectManager.addObject(finishedObject);
@@ -460,6 +449,7 @@ public class SketchPanel extends JPanel{
                 //&& !(selectedObject instanceof Furniture  && (object instanceof Window ||  object instanceof Door ))
                 //Add some condition such that it becomes false when furniture is selected
                 &&  !(object instanceof Door && selectedObject.intersects(object) && selectedObject instanceof Room )
+                &&  !(object instanceof Window && selectedObject.intersects(object) && selectedObject instanceof Room )
                 
                 ){
                 
@@ -493,7 +483,8 @@ public class SketchPanel extends JPanel{
             if( selectedObject != object 
                 && !copiedObject.contains(object) 
                 && selectedObject.intersects(object)
-                && !(selectedObject instanceof Furniture)
+                // && !(selectedObject instanceof Furniture)
+                && !(object.contains(selectedObject))
                 ){
                     updateStatusLabel("Collision on rotate");
                 return true;

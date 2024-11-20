@@ -76,8 +76,8 @@ public class DoorTool extends DrawingTool {
     }
 
     // ------ New Experimental code ----------
-    // public void setCurrentObject(CanvasObject object) {
-    //     this.currentObject = object;
-    // }
+    public void setCurrentObject(CanvasObject object) {
+        this.currentObject = object;
+    }
     
 }
