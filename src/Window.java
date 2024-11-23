@@ -5,7 +5,8 @@ import java.awt.Rectangle;
 import java.awt.Stroke;
 
 public class Window extends CanvasObject{
-    public String type = "Window";
+    // public String type = "Window";
+    public String type;
 
     public Window(int x, int y, int width, int height) {
         this.x = x;
@@ -13,6 +14,7 @@ public class Window extends CanvasObject{
         this.width = width;
         this.height = height;
         layer = 2;
+        type = "Window";
     }
 
     @Override

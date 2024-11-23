@@ -4,20 +4,22 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 
 public class Door extends CanvasObject {
-    public String type = "Door";
-
+    // public String type = "Door";
+    public String type;
+    
     public Door(int x, int y, int width, int height) {
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
         layer = 2;
+        type = "Door";
     }
 
     @Override
     void draw(Graphics2D g2d) {
         g2d.setColor(Color.gray);
-        g2d.draw(this);;
+        g2d.draw(this);
     }
 
     @Override
