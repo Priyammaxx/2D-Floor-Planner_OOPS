@@ -7,7 +7,8 @@ import java.awt.image.BufferedImage;
 // Furniture will render PNGS
 
 public class Furniture extends CanvasObject{
-    public String type = "Furniture";
+    // public String type = "Furniture";
+    public String type;
     int imageIndex;
     private double rotationAngle = 0.0;
     
@@ -18,6 +19,7 @@ public class Furniture extends CanvasObject{
         this.height = height;
         this.imageIndex = imageIndex;
         layer = 1;
+        type = "Furniture";
     }
 
     @Override
