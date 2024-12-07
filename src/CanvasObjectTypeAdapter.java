@@ -27,7 +27,11 @@ public class CanvasObjectTypeAdapter extends TypeAdapter<CanvasObject> {
         switch (object.getType()) {
             case "Room":
                 Room room = (Room) object;
-                out.name("color").value(String.format("#%02x%02x%02x", room.getColor().getRed(), room.getColor().getGreen(), room.getColor().getBlue()));
+                out.name("color").value(String.format("(%d,%d,%d,%d)",
+                    room.getColor().getRed(),
+                    room.getColor().getGreen(),
+                    room.getColor().getBlue(),
+                    room.getColor().getAlpha()));
                 // out.name("alpha").value(room.getAlpha());
                 break;
             case "Furniture":
@@ -52,10 +56,24 @@ public class CanvasObjectTypeAdapter extends TypeAdapter<CanvasObject> {
         
         switch (type) {
             case  "Room":
-                Color color = Color.decode(jsonObject.get("color").getAsString());
+                String colorString = jsonObject.get("color").getAsString();
+                Color color;
+                if (colorString.startsWith("(") && colorString.endsWith(")")) {
+                    colorString = colorString.substring(1, colorString.length() - 1);
+                    String[] components = colorString.split(",");
+                    if (components.length == 4) {
+                        int red = Integer.parseInt(components[0].trim());
+                        int green = Integer.parseInt(components[1].trim());
+                        int blue = Integer.parseInt(components[2].trim());
+                        int alpha = Integer.parseInt(components[3].trim());
+                        color = new Color(red, green, blue, alpha);
+                        return new Room(x, y, width, height, color);
+                    }
+                }
                 // float alpha = jsonObject.get("alpha").getAsFloat(); // comment this line, alpha not initialized in constructor
                 // no need to get layer, comment out that later
-                return new Room(x, y, width, height, color);
+                throw new IOException("Invalid color format: " + colorString);
+                
             case "Furniture":
                 int imageIndex = jsonObject.get("imageIndex").getAsInt();
                 return new Furniture(x, y, width, height, imageIndex);

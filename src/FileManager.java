@@ -38,6 +38,7 @@ public class FileManager {
         if (userSelection == JFileChooser.APPROVE_OPTION) {
             File file = fileChooser.getSelectedFile();
             try (FileWriter writer = new FileWriter(file)) {
+                System.out.println(objectManager.getObjects()); // debug code
                 json.toJson(objectManager.getObjects(), writer);
                 JOptionPane.showMessageDialog(sketchApp, "Canvas data exported to " + file.getName());
             } catch (IOException e) {
@@ -48,7 +49,7 @@ public class FileManager {
 
     public void loadFromFile() {
         Gson json = new GsonBuilder()
-        .registerTypeAdapterFactory(CanvasObjectAdapterFactory.getAdapterFactory())
+        .registerTypeAdapter(CanvasObject.class, new CanvasObjectTypeAdapter())
         .registerTypeAdapter(Color.class, new ColorTypeAdapter())
         .create();
 
@@ -61,6 +62,7 @@ public class FileManager {
             try (FileReader reader = new FileReader(file)) {
                 ArrayList<CanvasObject> importedObjects = json.fromJson(reader, new TypeToken<ArrayList<CanvasObject>>() {}.getType());
                 // System.out.println(importedObjects.size()); // debug
+                System.out.println(importedObjects); // debug
                 objectManager.loadObjects(importedObjects);
                 sketchPanel.repaint();
                 JOptionPane.showMessageDialog(sketchApp, "Canvas data imported from " + file.getName() + " successfully!");
