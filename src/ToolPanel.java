@@ -3,6 +3,7 @@ import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.GridLayout;
+import java.util.ArrayList;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
@@ -12,6 +13,7 @@ public class ToolPanel extends JPanel {
     private JPanel optionsPanel; // holds extra options for above selected
     private CardLayout cardLayout;
     private FurnitureLoader furnitureLoader;
+    JButton prevSelectedButton;
 
     public ToolPanel(SketchApp app) {
         this.app = app;
@@ -28,34 +30,54 @@ public class ToolPanel extends JPanel {
         JButton furnitureToolButton = new JButton("Furniture Tool");
         JButton doorToolButton = new JButton("Door Tool");
         JButton windowToolButton = new JButton("Window Tool");
+
+        ArrayList<JButton> mainButtons = new ArrayList<>();
+        mainButtons.add(selectToolButton);
+        mainButtons.add(roomToolButton);
+        mainButtons.add(furnitureToolButton);
+        mainButtons.add(doorToolButton);
+        mainButtons.add(windowToolButton);
+
+        for (JButton button : mainButtons) {
+            button.setFocusable(false);
+            button.setBackground(new Color(226,235,245));
+        }
+        selectToolButton.setFocusable(false);
+        roomToolButton.setFocusable(false);
+        furnitureToolButton.setFocusable(false);
+        doorToolButton.setFocusable(false);
+        windowToolButton.setFocusable(false);
         
         selectToolButton.addActionListener(e -> {
+            changeButtorColor(selectToolButton);
             app.setDrawingTool(new SelectTool());
             optionsPanel.setVisible(false);
         });
         roomToolButton.addActionListener(e -> {
+            changeButtorColor(roomToolButton);
             app.setDrawingTool(new RoomTool());
             showOptions("Rooms");
         });
         furnitureToolButton.addActionListener(e -> {
+            changeButtorColor(furnitureToolButton);
             app.setDrawingTool(new FurnitureTool());
             showOptions("Furniture");
         });
         doorToolButton.addActionListener(e -> {
+            changeButtorColor(doorToolButton);
             app.setDrawingTool(new DoorTool());
             optionsPanel.setVisible(false);
         });
         windowToolButton.addActionListener(e -> {
+            changeButtorColor(windowToolButton);
             app.setDrawingTool(new WindowTool());
             optionsPanel.setVisible(false);
         });
 
         //  Main Buttons go here
-        mainToolPanel.add(selectToolButton);
-        mainToolPanel.add(roomToolButton);
-        mainToolPanel.add(furnitureToolButton);
-        mainToolPanel.add(doorToolButton);
-        mainToolPanel.add(windowToolButton);
+        for (JButton button : mainButtons) {
+            mainToolPanel.add(button);
+        }
             
         // Subsections for visible options by each main tool button -----------
         cardLayout = new CardLayout();
@@ -169,5 +191,13 @@ public class ToolPanel extends JPanel {
     private void showOptions(String optionsKey) {
         cardLayout.show(optionsPanel, optionsKey); // show specific options panel
         optionsPanel.setVisible(true);
+    }
+
+    private void changeButtorColor(JButton button) {
+        if (prevSelectedButton != null) {
+            prevSelectedButton.setBackground(new Color(226,235,245));
+            prevSelectedButton = button;
+            prevSelectedButton.setBackground(new Color(206,222,237));
+        }
     }
 }
